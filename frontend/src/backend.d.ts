@@ -22,4 +22,5 @@ export interface backendInterface {
     getFootstepsByHour(hour: bigint): Promise<bigint>;
     getFootstepsToday(): Promise<bigint>;
     getRecords(): Promise<Array<EnergyRecord>>;
+    isHardwareConnected(): Promise<boolean>;
 }

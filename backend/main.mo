@@ -4,7 +4,9 @@ import Array "mo:core/Array";
 import Text "mo:core/Text";
 import VarArray "mo:core/VarArray";
 import MixinStorage "blob-storage/Mixin";
+import Migration "migration";
 
+(with migration = Migration.run)
 actor {
   include MixinStorage();
 
@@ -20,6 +22,7 @@ actor {
   var mode = "charging";
   var recordCount = 0;
   var currentHour : ?Nat = null; // Track the current simulated hour
+  var hardwareConnected = false; // Track hardware connection
 
   let records = VarArray.repeat<EnergyRecord>({
     timestamp = 0;
@@ -139,6 +142,10 @@ actor {
     } else if (batteryLevel < 30) {
       mode := "charging";
     };
+  };
+
+  public query ({ caller }) func isHardwareConnected() : async Bool {
+    hardwareConnected;
   };
 
   func getHour(timestamp : Int) : Nat {

@@ -1,7 +1,7 @@
 {
   "frontend/src/index.css": "Global dark industrial theme with OKLCH color tokens, neon accent CSS variables (amber/green/cyan), custom font imports (Orbitron, Share Tech Mono), glow utility classes, scanline overlay, and flow animation keyframes.",
   "frontend/tailwind.config.js": "Extended Tailwind config with Orbitron/Share Tech Mono/Inter font families, neon color tokens (amber/green/cyan/red), glow box-shadow utilities, and pulse-glow animation keyframes.",
-  "frontend/src/hooks/useQueries.ts": "React Query hooks for all backend operations: getRecords, getCurrentHour, getFootstepsByHour, getFootstepsToday, advanceTime, adjustEnergyMode, and hourlyFootsteps (all 24 hours in parallel).",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for all backend operations including a new `useHardwareConnectionStatus` hook that polls `isHardwareConnected()` every 3 seconds to detect when real hardware has connected.",
   "frontend/src/App.tsx": "Root app component that renders the DashboardLayout as the single-page application.",
   "frontend/src/components/DashboardHeader.tsx": "Header component with banner background image, project title in Orbitron font with amber glow, system online/AI active status badges.",
   "frontend/src/components/SensorDataPanel.tsx": "Live sensor data card showing footstep count, voltage, battery progress bar with color thresholds, and color-coded AI mode badge; polls backend every 4 seconds.",
@@ -9,5 +9,6 @@
   "frontend/src/components/EnergyFlowDiagram.tsx": "SVG-based animated energy flow diagram with four nodes (Footsteps→Generator→Battery→Devices) and animated dashed arrows highlighting the active energy path based on current AI mode.",
   "frontend/src/components/AnalyticsCharts.tsx": "Tabbed analytics panel with recharts: hourly footstep bar chart (24h pattern), voltage line chart over time, and battery level trend line chart.",
   "frontend/src/components/SimulationControl.tsx": "Simulation control bar with manual \"Advance\" button and auto-run toggle that calls advanceTime every 4 seconds to drive the IoT simulation.",
-  "frontend/src/components/DashboardLayout.tsx": "Main layout composing all dashboard panels in a responsive grid with header, simulation control, sensor/AI panels, energy flow diagram, analytics, and footer with attribution."
+  "frontend/src/components/DashboardLayout.tsx": "Main layout that now conditionally renders either the `HardwareWaitingState` placeholder (when hardware is not connected) or all dashboard panels (SimulationControl, SensorDataPanel, AIDecisionPanel, EnergyFlowDiagram, AnalyticsCharts) once hardware connects.",
+  "frontend/src/components/HardwareWaitingState.tsx": "Centered waiting-state UI shown when hardware is not yet connected; features a pulsing amber WiFi icon, animated dots, scanline overlay, and industrial neon styling matching the existing dashboard theme."
 }

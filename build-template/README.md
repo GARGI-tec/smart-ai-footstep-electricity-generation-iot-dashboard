@@ -1,4 +1,4 @@
-## Smart AI Footstep Electricity Generation IoT Dashboard
+## 
 
 This source code has been exported from [Caffeine](https://caffeine.ai/)
 

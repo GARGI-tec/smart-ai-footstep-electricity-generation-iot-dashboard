@@ -61,6 +61,7 @@ export const idlService = IDL.Service({
   'getFootstepsByHour' : IDL.Func([IDL.Nat], [IDL.Nat], ['query']),
   'getFootstepsToday' : IDL.Func([], [IDL.Nat], []),
   'getRecords' : IDL.Func([], [IDL.Vec(EnergyRecord)], ['query']),
+  'isHardwareConnected' : IDL.Func([], [IDL.Bool], ['query']),
 });
 
 export const idlInitArgs = [];
@@ -119,6 +120,7 @@ export const idlFactory = ({ IDL }) => {
     'getFootstepsByHour' : IDL.Func([IDL.Nat], [IDL.Nat], ['query']),
     'getFootstepsToday' : IDL.Func([], [IDL.Nat], []),
     'getRecords' : IDL.Func([], [IDL.Vec(EnergyRecord)], ['query']),
+    'isHardwareConnected' : IDL.Func([], [IDL.Bool], ['query']),
   });
 };
 

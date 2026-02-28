@@ -1,81 +1,26 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-28T05:30:08.579Z",
-  "summary": "The diff implements most requirements across backend and frontend. The backend actor covers sensor data storage, AI mode logic, and time-of-day simulation. Frontend components cover all five panels. However, several specific acceptance criteria are not fully met: REQ-2 AI mode thresholds differ from spec, REQ-3 auto-tick is frontend-driven rather than backend-driven, and REQ-5 decision log is derived from sensor records rather than a dedicated log.",
-  "missing_requirements": [
-    {
-      "id": "REQ-2",
-      "requirement": "When battery < 20% and footsteps are low, AI mode switches to 'Using Stored Energy'; When battery is between 20–90%, AI mode is 'Charging Battery'",
-      "reason": "Backend uses 'depleting' as the mode string instead of 'Using Stored Energy'. The low-battery threshold in adjustEnergyMode uses 30% not 20% as specified. Mode transitions also depend on footstep count (50 threshold) rather than purely battery level for the redirecting-to-depleting switch.",
-      "evidence": [
-        "backend/main.mo"
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "requirement": "The simulation should auto-tick every few seconds to advance sensor readings, driven by the backend actor",
-      "reason": "The backend has no timer-based auto-tick. Auto-ticking is implemented entirely on the frontend via SimulationControl.tsx calling advanceTime every 4 seconds. The build constraint states all sensor data simulation must happen within the single Motoko backend actor.",
-      "evidence": [
-        "backend/main.mo",
-        "frontend/src/components/SimulationControl.tsx"
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "requirement": "Recent AI decision log shows last 10 decisions with timestamps",
-      "reason": "AIDecisionPanel shows the last 10 EnergyRecord entries as a proxy decision log. There is no dedicated decision log storing mode-change events — if many ticks occur with the same mode, the log shows repeated identical mode entries rather than distinct decision events.",
-      "evidence": [
-        "frontend/src/components/AIDecisionPanel.tsx"
-      ]
-    }
-  ],
+  "generatedAt": "2026-02-28T06:29:18.288Z",
+  "summary": "Both REQ-9 and REQ-10 are fully implemented. The backend adds a hardwareConnected flag (defaulting to false), exposes isHardwareConnected query, and sets the flag when hardware POSTs data. The frontend polls every 3 seconds via useHardwareConnectionStatus, conditionally renders HardwareWaitingState when not connected, and hides all panels (SensorDataPanel, AIDecisionPanel, EnergyFlowDiagram, AnalyticsCharts, SimulationControl) until hardware connects. The waiting state uses the existing neon amber/cyan industrial theme with pulsing animation.",
+  "missing_requirements": [],
   "hallucinated_features": [
     {
-      "description": "getFootstepsToday() aggregation endpoint",
-      "reason": "The build request only specifies endpoints for reading current state, historical data, and advancing the tick. A dedicated getFootstepsToday aggregation was not requested.",
+      "description": "A migration module (backend/migration.mo) was added to handle schema migration from old actor state to new actor state with the hardwareConnected field.",
+      "reason": "The build request did not request any migration module or schema migration logic. It only requested adding a flag and exposing a query. While potentially useful, this was not specified in the requirements.",
       "evidence": [
-        "backend/main.mo",
-        "frontend/src/hooks/useQueries.ts"
-      ]
-    },
-    {
-      "description": "adjustEnergyMode() as a separate callable public endpoint",
-      "reason": "The spec says AI mode is recalculated on every simulated sensor tick within advanceTime. A separate adjustEnergyMode mutation endpoint was not requested.",
-      "evidence": [
-        "backend/main.mo",
-        "frontend/src/hooks/useQueries.ts"
-      ]
-    },
-    {
-      "description": "Manual ADVANCE button and AUTO ON/OFF toggle SimulationControl panel visible to users",
-      "reason": "The spec does not request any manual simulation control UI. It only states the simulation should auto-tick every few seconds. A visible control panel with manual and auto-run buttons was not requested.",
-      "evidence": [
-        "frontend/src/components/SimulationControl.tsx"
+        "backend/migration.mo"
       ]
     }
   ],
-  "confidence": 0.74,
+  "confidence": 0.9,
   "changed_files": [
-    "all_files_summary.json",
     "backend/main.mo",
+    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/index.css",
-    "frontend/index.html",
-    "frontend/src/App.tsx",
-    "frontend/src/components/AIDecisionPanel.tsx",
-    "frontend/src/components/AnalyticsCharts.tsx",
-    "frontend/src/components/DashboardHeader.tsx",
     "frontend/src/components/DashboardLayout.tsx",
-    "frontend/src/components/EnergyFlowDiagram.tsx",
-    "frontend/src/components/SensorDataPanel.tsx",
-    "frontend/src/components/SimulationControl.tsx",
-    "frontend/src/hooks/useActor.ts",
-    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/components/HardwareWaitingState.tsx",
     "frontend/src/hooks/useQueries.ts",
-    "frontend/src/index.css",
-    "frontend/src/main.tsx",
-    "frontend/tailwind.config.js",
     "project_state.json"
   ]
 }

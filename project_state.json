@@ -1,14 +1,13 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
-  "summary": "Final year engineering project: Smart AI Footstep Electricity Generation using IoT. A web dashboard app that simulates and visualizes AI-driven energy management from footstep-powered generators. Features IoT sensor data display, AI smart energy routing, overcharge prevention, time-of-day pattern learning, and energy flow visualization.",
+  "projectStateVersion": 5,
+  "summary": "Final year engineering project: Smart AI Footstep Electricity Generation using IoT. A web dashboard app that displays AI-driven energy management from footstep-powered generators. The dashboard should show blank/empty state until real hardware is connected and sending data. Features IoT sensor data display, AI smart energy routing, overcharge prevention, time-of-day pattern learning, and energy flow visualization. Includes an HTTP API endpoint for real hardware (Arduino/ESP32/Raspberry Pi) to send sensor data.",
   "architectural_notes": [
-    "Simulated IoT sensor data (footsteps, voltage, battery %) used for demo since no real hardware is connected",
-    "AI logic rules implemented client-side: if battery > 90%, route power directly to devices; store energy during peak hours; draw from storage during low traffic"
+    "AI logic rules implemented client-side: if battery > 90%, route power directly to devices; store energy during peak hours; draw from storage during low traffic",
+    "Dashboard displays blank/empty state by default — no simulated data. Data only appears when real hardware sends readings via HTTP POST to the backend API endpoint."
   ],
   "known_issues": [],
   "isFixRequest": false,
-  "imageRequirements": "## Required Images\n- Glowing footstep icon on dark background with electric energy effect (footstep-icon.dim_128x128.png)\n- Dark industrial control room banner with circuit board pattern and subtle amber glow (dashboard-banner.dim_1200x200.png)",
   "existing_features": [
     {
       "id": "feature-build-a-real-time-iot-sensor-data-display-panel-on-the-frontend-showing-current-footstep-count-steps-min-current-voltage-generated-w-battery-level-as-a-percentage-with-a-visual-progress-bar-and-current-ai-mode-with-a-color-coded-status-badge-green-charging-amber-redirecting-blue-using-stored",
@@ -47,6 +46,14 @@
       "title": "Apply a bold industrial/tech visual theme across the entire dashboard: dark background with neon accent colors (amber/green/cyan), large data readout typography, card-based layout with subtle glowing borders, and a header displaying the project title 'Smart AI Footstep Energy System'. The design should feel like a professional engineering control room dashboard.",
       "reqIds": [
         "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-frontend-dashboard-to-show-a-blank-empty-waiting-state-on-all-panels-sensordatapanel-aidecisionpanel-energyflowdiagram-analyticscharts-simulationcontrol-when-the-backend-ishardwareconnected-flag-is-false-display-a-centered-placeholder-message-such-as-waiting-for-hardware-connection-with-a-subtle-pulsing-indicator-once-hardware-connects-and-the-flag-becomes-true-render-all-panels-normally-with-live-data-poll-the-ishardwareconnected-status-every-3-seconds-using-react-query",
+      "title": "Update the frontend dashboard to show a blank/empty waiting state on all panels (SensorDataPanel, AIDecisionPanel, EnergyFlowDiagram, AnalyticsCharts, SimulationControl) when the backend isHardwareConnected flag is false. Display a centered placeholder message such as 'Waiting for hardware connection...' with a subtle pulsing indicator. Once hardware connects and the flag becomes true, render all panels normally with live data. Poll the isHardwareConnected status every 3 seconds using React Query.",
+      "reqIds": [
+        "REQ-10"
       ],
       "version": 1
     }
@@ -109,6 +116,26 @@
       "summary": "Implement time-of-day traffic pattern simulation in the backend: morning hours (6am–12pm) produce high footstep counts (80–150 steps/min) and high voltage; afternoon hours (12pm–6pm) produce lower footstep counts (30–70 steps/min) and lower voltage; evening/night hours produce minimal activity. The simulation should auto-tick every few seconds to advance sensor readings.",
       "reqIds": [
         "REQ-3"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Dashboard shows blank/empty state (no simulated data) until real hardware sends data via API. Once hardware connects and POSTs sensor readings, data appears live on the dashboard.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Add a backend HTTP API endpoint that accepts real sensor data (footstep count, voltage, battery level) from hardware devices (Arduino, ESP32, Raspberry Pi) via POST request.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Add a 'hardware connected' flag to the backend state. This flag starts as false. When real sensor data is received via the hardware POST API endpoint, set the flag to true. Expose a query function (e.g., isHardwareConnected) that returns this boolean so the frontend can check connection status.",
+      "reqIds": [
+        "REQ-9"
       ],
       "status": "pending"
     }

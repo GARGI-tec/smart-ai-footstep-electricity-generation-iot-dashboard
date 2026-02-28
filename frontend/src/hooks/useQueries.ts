@@ -100,3 +100,16 @@ export function useHourlyFootsteps() {
     refetchInterval: 10000,
   });
 }
+
+export function useHardwareConnectionStatus() {
+  const { actor, isFetching } = useActor();
+  return useQuery<boolean>({
+    queryKey: ['hardwareConnected'],
+    queryFn: async () => {
+      if (!actor) return false;
+      return actor.isHardwareConnected();
+    },
+    enabled: !!actor && !isFetching,
+    refetchInterval: 3000,
+  });
+}

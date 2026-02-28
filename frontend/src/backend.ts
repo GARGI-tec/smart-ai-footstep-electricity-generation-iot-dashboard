@@ -121,6 +121,7 @@ export interface backendInterface {
     getFootstepsByHour(hour: bigint): Promise<bigint>;
     getFootstepsToday(): Promise<bigint>;
     getRecords(): Promise<Array<EnergyRecord>>;
+    isHardwareConnected(): Promise<boolean>;
 }
 import type { _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
@@ -290,6 +291,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.getRecords();
+            return result;
+        }
+    }
+    async isHardwareConnected(): Promise<boolean> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.isHardwareConnected();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.isHardwareConnected();
             return result;
         }
     }

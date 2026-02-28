@@ -51,6 +51,7 @@ export interface _SERVICE {
   'getFootstepsByHour' : ActorMethod<[bigint], bigint>,
   'getFootstepsToday' : ActorMethod<[], bigint>,
   'getRecords' : ActorMethod<[], Array<EnergyRecord>>,
+  'isHardwareConnected' : ActorMethod<[], boolean>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];
