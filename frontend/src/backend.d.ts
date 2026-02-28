@@ -7,20 +7,20 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
-export interface EnergyRecord {
-    voltage: number;
-    batteryLevel: bigint;
-    mode: string;
-    timestamp: Time;
-    footsteps: bigint;
+export interface BatteryStatus {
+    status: string;
+    percentage: bigint;
 }
-export type Time = bigint;
+export interface Reading {
+    voltage: number;
+    footstepCount: bigint;
+    usbOutputActive: boolean;
+    batteryLevel: bigint;
+    current: number;
+    energy: number;
+}
 export interface backendInterface {
-    adjustEnergyMode(): Promise<void>;
-    advanceTime(): Promise<void>;
-    getCurrentHour(): Promise<bigint>;
-    getFootstepsByHour(hour: bigint): Promise<bigint>;
-    getFootstepsToday(): Promise<bigint>;
-    getRecords(): Promise<Array<EnergyRecord>>;
-    isHardwareConnected(): Promise<boolean>;
+    getBatteryStatus(): Promise<BatteryStatus>;
+    getLatestReading(): Promise<Reading | null>;
+    submitReading(reading: Reading): Promise<void>;
 }

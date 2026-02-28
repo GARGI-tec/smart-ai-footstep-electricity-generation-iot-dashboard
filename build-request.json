@@ -1,57 +1,75 @@
 {
   "kind": "build_request",
-  "title": "Show blank dashboard until hardware connects and sends data",
-  "projectName": "Smart AI Footstep Energy System",
+  "title": "Show 'No Device Connected' state instead of demo data",
+  "projectName": "Campus Energy Tile Dashboard",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-9",
-      "text": "Add a 'hardware connected' flag to the backend state. This flag starts as false. When real sensor data is received via the hardware POST API endpoint, set the flag to true. Expose a query function (e.g., isHardwareConnected) that returns this boolean so the frontend can check connection status.",
-      "target": "backend",
-      "source": {
-        "messageIds": [
-          "msg-latest"
-        ],
-        "quotes": [
-          "once i connect with hardware then only data shld be showed on software till tht it is blank"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Backend has an isHardwareConnected query that returns false by default",
-        "When hardware POSTs sensor data, the flag is set to true",
-        "Flag persists across queries once set to true"
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "text": "Update the frontend dashboard to show a blank/empty waiting state on all panels (SensorDataPanel, AIDecisionPanel, EnergyFlowDiagram, AnalyticsCharts, SimulationControl) when the backend isHardwareConnected flag is false. Display a centered placeholder message such as 'Waiting for hardware connection...' with a subtle pulsing indicator. Once hardware connects and the flag becomes true, render all panels normally with live data. Poll the isHardwareConnected status every 3 seconds using React Query.",
+      "id": "REQ-1",
+      "text": "Update SimulationControl component to display a prominent 'No Device Connected' status when no real sensor reading has been received from the ESP32 hardware, instead of showing a syncing or active state.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-latest"
+          "msg-4",
+          "msg-5"
         ],
         "quotes": [
-          "once i connect with hardware then only data shld be showed on software till tht it is blank"
+          "update the app so it clearly shows a 'No Device Connected' message instead of showing fake data until your real hardware is connected"
         ]
       },
       "acceptanceCriteria": [
-        "When isHardwareConnected is false, all data panels are hidden and replaced with a 'Waiting for hardware connection...' placeholder",
-        "The placeholder uses the existing dark neon industrial theme (dark background, amber/cyan accent text, pulsing animation)",
-        "When isHardwareConnected becomes true, all dashboard panels render with live sensor data",
-        "Frontend polls isHardwareConnected every 3 seconds and automatically reveals panels without requiring a page refresh",
-        "The SimulationControl (manual advance) is also hidden in the waiting state so users cannot inject fake data before hardware connects"
+        "SimulationControl shows 'No Device Connected' indicator when latest reading is null or absent",
+        "The indicator is visually distinct (e.g., grey/muted color) compared to the active connected state"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Remove all hardcoded/simulated demo sensor data from useQueries.ts (or wherever default mock values are injected). When no real reading exists, all data values must be null/undefined rather than fake numbers.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4",
+          "msg-5"
+        ],
+        "quotes": [
+          "fake demo data, just for preview",
+          "After you build the tile and connect ESP32 = real live data from your footsteps"
+        ]
+      },
+      "acceptanceCriteria": [
+        "No mock or hardcoded voltage, current, energy, footstep, or battery values are returned when the backend has no stored reading",
+        "React Query hooks return null/undefined for all sensor fields when no reading is available"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Update all dashboard panel components (SensorDataPanel, SensorReadingCards, AnalyticsCharts, BatteryLevelPanel, USBOutputStatusPanel, AIDecisionPanel, EnergyFlowDiagram, HexagonTilePanel) to render a clear 'No Device Connected' or 'Awaiting Hardware' placeholder state — instead of zeroed-out or default values — when sensor data is null/absent.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4",
+          "msg-5"
+        ],
+        "quotes": [
+          "shows a 'No Device Connected' message instead of displaying fake demo data",
+          "The dashboard will only show real data once your ESP32 hardware is connected"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Each panel displays a 'No Device Connected' or equivalent placeholder message when data is null",
+        "No panel shows '0', '0%', or other misleading default values when hardware is not connected",
+        "When real data arrives from the backend, panels switch to displaying actual readings automatically"
       ]
     }
   ],
   "constraints": [
-    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui",
-    "The hardware POST API endpoint behaviour must not be changed — only add the connection flag tracking on top of it",
-    "The blank state must respect the existing industrial neon visual theme"
+    "Do not modify backend/main.mo data schema or API — the fix is frontend-only",
+    "Do not edit files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui"
   ],
   "nonGoals": [
-    "Do not change the simulated data generation logic in the backend",
-    "Do not add a manual 'connect hardware' button — the flag must only be set by real hardware POST data",
-    "Do not alter any existing chart, panel, or flow diagram component logic beyond hiding/showing them"
+    "Adding any new backend endpoints or data submission logic",
+    "Implementing real-time WebSocket connectivity",
+    "Changing the visual theme or layout of the dashboard"
   ],
   "imageRequirements": {
     "required": [],

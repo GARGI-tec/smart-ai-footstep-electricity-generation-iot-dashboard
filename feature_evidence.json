@@ -2,11 +2,28 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-update-the-frontend-dashboard-to-show-a-blank-empty-waiting-state-on-all-panels-sensordatapanel-aidecisionpanel-energyflowdiagram-analyticscharts-simulationcontrol-when-the-backend-ishardwareconnected-flag-is-false-display-a-centered-placeholder-message-such-as-waiting-for-hardware-connection-with-a-subtle-pulsing-indicator-once-hardware-connects-and-the-flag-becomes-true-render-all-panels-normally-with-live-data-poll-the-ishardwareconnected-status-every-3-seconds-using-react-query",
-      "featureTitle": "Update the frontend dashboard to show a blank/empty waiting state on all panels (SensorDataPanel, AIDecisionPanel, EnergyFlowDiagram, AnalyticsCharts, SimulationControl) when the backend isHardwareConnected flag is false. Display a centered placeholder message such as 'Waiting for hardware connection...' with a subtle pulsing indicator. Once hardware connects and the flag becomes true, render all panels normally with live data. Poll the isHardwareConnected status every 3 seconds using React Query.",
+      "featureId": "feature-update-simulationcontrol-component-to-display-a-prominent-no-device-connected-status-when-no-real-sensor-reading-has-been-received-from-the-esp32-hardware-instead-of-showing-a-syncing-or-active-state",
+      "featureTitle": "Update SimulationControl component to display a prominent 'No Device Connected' status when no real sensor reading has been received from the ESP32 hardware, instead of showing a syncing or active state.",
       "files": [
-        "frontend/src/components/DashboardLayout.tsx",
-        "frontend/src/components/HardwareWaitingState.tsx",
+        "frontend/src/components/SimulationControl.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-remove-all-hardcoded-simulated-demo-sensor-data-from-usequeries-ts-or-wherever-default-mock-values-are-injected-when-no-real-reading-exists-all-data-values-must-be-null-undefined-rather-than-fake-numbers",
+      "featureTitle": "Remove all hardcoded/simulated demo sensor data from useQueries.ts (or wherever default mock values are injected). When no real reading exists, all data values must be null/undefined rather than fake numbers.",
+      "files": [
         "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
@@ -18,7 +35,33 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-10"
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-all-dashboard-panel-components-sensordatapanel-sensorreadingcards-analyticscharts-batterylevelpanel-usboutputstatuspanel-aidecisionpanel-energyflowdiagram-hexagontilepanel-to-render-a-clear-no-device-connected-or-awaiting-hardware-placeholder-state-instead-of-zeroed-out-or-default-values-when-sensor-data-is-null-absent",
+      "featureTitle": "Update all dashboard panel components (SensorDataPanel, SensorReadingCards, AnalyticsCharts, BatteryLevelPanel, USBOutputStatusPanel, AIDecisionPanel, EnergyFlowDiagram, HexagonTilePanel) to render a clear 'No Device Connected' or 'Awaiting Hardware' placeholder state — instead of zeroed-out or default values — when sensor data is null/absent.",
+      "files": [
+        "frontend/src/components/AIDecisionPanel.tsx",
+        "frontend/src/components/AnalyticsCharts.tsx",
+        "frontend/src/components/BatteryLevelPanel.tsx",
+        "frontend/src/components/EnergyFlowDiagram.tsx",
+        "frontend/src/components/HexagonTilePanel.tsx",
+        "frontend/src/components/SensorDataPanel.tsx",
+        "frontend/src/components/SensorReadingCards.tsx",
+        "frontend/src/components/USBOutputStatusPanel.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
       ],
       "confidence": "high"
     }

@@ -1,53 +1,78 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-28T06:29:18.290Z",
+  "generatedAt": "2026-02-28T13:19:15.241Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 1,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-10",
-        "summary": "Update the frontend dashboard to show a blank/empty waiting state on all panels (SensorDataPanel, AIDecisionPanel, EnergyFlowDiagram, AnalyticsCharts, SimulationControl) when the backend isHardwareConnected flag is false. Display a centered placeholder message such as 'Waiting for hardware connection...' with a subtle pulsing indicator. Once hardware connects and the flag becomes true, render all panels normally with live data. Poll the isHardwareConnected status every 3 seconds using React Query.",
+        "id": "REQ-1",
+        "summary": "Update SimulationControl component to display a prominent 'No Device Connected' status when no real sensor reading has been received from the ESP32 hardware, instead of showing a syncing or active state.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/components/DashboardLayout.tsx",
-          "frontend/src/components/HardwareWaitingState.tsx"
+          "frontend/src/components/SimulationControl.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts",
-          "frontend/src/components/DashboardLayout.tsx",
-          "frontend/src/components/HardwareWaitingState.tsx"
+          "frontend/src/components/SimulationControl.tsx"
         ]
       },
       {
-        "id": "REQ-9",
-        "summary": "Add a 'hardware connected' flag to the backend state. This flag starts as false. When real sensor data is received via the hardware POST API endpoint, set the flag to true. Expose a query function (e.g., isHardwareConnected) that returns this boolean so the frontend can check connection status.",
-        "status": "unknown",
-        "plannedFiles": [],
-        "matchedFiles": []
+        "id": "REQ-2",
+        "summary": "Remove all hardcoded/simulated demo sensor data from useQueries.ts (or wherever default mock values are injected). When no real reading exists, all data values must be null/undefined rather than fake numbers.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Update all dashboard panel components (SensorDataPanel, SensorReadingCards, AnalyticsCharts, BatteryLevelPanel, USBOutputStatusPanel, AIDecisionPanel, EnergyFlowDiagram, HexagonTilePanel) to render a clear 'No Device Connected' or 'Awaiting Hardware' placeholder state — instead of zeroed-out or default values — when sensor data is null/absent.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/SensorDataPanel.tsx",
+          "frontend/src/components/SensorReadingCards.tsx",
+          "frontend/src/components/AnalyticsCharts.tsx",
+          "frontend/src/components/BatteryLevelPanel.tsx",
+          "frontend/src/components/USBOutputStatusPanel.tsx",
+          "frontend/src/components/AIDecisionPanel.tsx",
+          "frontend/src/components/EnergyFlowDiagram.tsx",
+          "frontend/src/components/HexagonTilePanel.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/SensorDataPanel.tsx",
+          "frontend/src/components/SensorReadingCards.tsx",
+          "frontend/src/components/AnalyticsCharts.tsx",
+          "frontend/src/components/BatteryLevelPanel.tsx",
+          "frontend/src/components/USBOutputStatusPanel.tsx",
+          "frontend/src/components/AIDecisionPanel.tsx",
+          "frontend/src/components/EnergyFlowDiagram.tsx",
+          "frontend/src/components/HexagonTilePanel.tsx"
+        ]
       }
     ]
   },
   "changedFiles": [
-    "backend/main.mo",
-    "backend/migration.mo",
     "build-request.json",
-    "build-template/README.md",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/backend.d.ts",
-    "frontend/src/backend.ts",
-    "frontend/src/components/DashboardLayout.tsx",
-    "frontend/src/components/HardwareWaitingState.tsx",
-    "frontend/src/declarations/backend.did.d.ts",
-    "frontend/src/declarations/backend.did.js",
+    "frontend/src/components/AIDecisionPanel.tsx",
+    "frontend/src/components/AnalyticsCharts.tsx",
+    "frontend/src/components/BatteryLevelPanel.tsx",
+    "frontend/src/components/EnergyFlowDiagram.tsx",
+    "frontend/src/components/HexagonTilePanel.tsx",
+    "frontend/src/components/SensorDataPanel.tsx",
+    "frontend/src/components/SensorReadingCards.tsx",
+    "frontend/src/components/SimulationControl.tsx",
+    "frontend/src/components/USBOutputStatusPanel.tsx",
     "frontend/src/hooks/useQueries.ts",
     "project_state.json",
     "scratch/component-selection.json",

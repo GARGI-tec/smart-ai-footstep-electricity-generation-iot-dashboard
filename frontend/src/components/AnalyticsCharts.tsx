@@ -1,214 +1,113 @@
-import { useGetRecords, useHourlyFootsteps } from '../hooks/useQueries';
+import { useLatestReading } from '../hooks/useQueries';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
-import { BarChart2 } from 'lucide-react';
-import type { EnergyRecord } from '../backend';
+import { BarChart2, Zap, Activity, Footprints, WifiOff } from 'lucide-react';
 
-function formatTime(ts: bigint): string {
-  const ms = Number(ts) / 1_000_000;
-  const date = new Date(ms);
-  return date.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+interface MetricRowProps {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  unit: string;
+  barPercent: number;
+  barColor: string;
 }
 
-const CHART_STYLE = {
-  background: 'transparent',
-  fontSize: 10,
-  fontFamily: "'Share Tech Mono', monospace",
-};
-
-const TOOLTIP_STYLE = {
-  backgroundColor: '#141414',
-  border: '1px solid #2a2a2a',
-  borderRadius: '6px',
-  fontSize: '11px',
-  fontFamily: "'Share Tech Mono', monospace",
-  color: '#e0e0e0',
-};
+function MetricRow({ icon, label, value, unit, barPercent, barColor }: MetricRowProps) {
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          {icon}
+          <span className="text-xs font-mono-tech tracking-widest uppercase">{label}</span>
+        </div>
+        <span className="font-mono-tech text-sm font-bold text-foreground">
+          {value}
+          <span className="text-xs text-muted-foreground ml-1">{unit}</span>
+        </span>
+      </div>
+      <div className="h-2 rounded-full bg-muted overflow-hidden">
+        <div
+          className={`h-full rounded-full transition-all duration-700 ${barColor}`}
+          style={{ width: `${barPercent}%` }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default function AnalyticsCharts() {
-  const { data: records } = useGetRecords();
-  const { data: hourlyData } = useHourlyFootsteps();
+  const { data: reading, isLoading } = useLatestReading();
 
-  const timeSeriesData = (records ?? []).map((r: EnergyRecord) => ({
-    time: formatTime(r.timestamp),
-    voltage: parseFloat(r.voltage.toFixed(2)),
-    battery: Number(r.batteryLevel),
-    footsteps: Number(r.footsteps),
-  }));
+  const hasData = reading !== null && reading !== undefined;
 
-  const hourlyChartData = (hourlyData ?? []).map((d) => ({
-    hour: `${d.hour.toString().padStart(2, '0')}:00`,
-    footsteps: d.footsteps,
-    period: d.hour >= 6 && d.hour < 12 ? 'morning' : d.hour >= 12 && d.hour < 18 ? 'afternoon' : 'night',
-  }));
+  const voltage = hasData ? reading!.voltage : 0;
+  const current = hasData ? reading!.current : 0;
+  const energy = hasData ? reading!.energy : 0;
+  const footstepCount = hasData ? Number(reading!.footstepCount) : 0;
+
+  // Normalize values to percentages for bar display
+  const voltagePercent = Math.min((voltage / 5.0) * 100, 100);
+  const currentPercent = Math.min((current / 1.0) * 100, 100);
+  const energyPercent = Math.min((energy / 10.0) * 100, 100);
+  const footstepPercent = Math.min((footstepCount / 200) * 100, 100);
 
   return (
-    <Card className="border bg-card card-glow-amber">
+    <Card className={`border bg-card ${hasData ? 'card-glow-amber' : ''}`}>
       <CardHeader className="pb-3">
         <CardTitle className="font-orbitron text-sm tracking-widest uppercase text-muted-foreground flex items-center gap-2">
           <BarChart2 className="w-4 h-4 text-neon-amber" />
-          Analytics & Patterns
+          Sensor Analytics
+          {isLoading && (
+            <span className="ml-auto text-xs font-mono-tech text-neon-amber animate-pulse-glow">LOADING...</span>
+          )}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="footsteps">
-          <TabsList className="bg-muted/30 border border-border mb-4 h-8">
-            <TabsTrigger value="footsteps" className="text-xs font-mono-tech tracking-wider data-[state=active]:bg-neon-amber/20 data-[state=active]:text-neon-amber">
-              FOOTSTEPS/HR
-            </TabsTrigger>
-            <TabsTrigger value="voltage" className="text-xs font-mono-tech tracking-wider data-[state=active]:bg-neon-cyan/20 data-[state=active]:text-neon-cyan">
-              VOLTAGE
-            </TabsTrigger>
-            <TabsTrigger value="battery" className="text-xs font-mono-tech tracking-wider data-[state=active]:bg-neon-green/20 data-[state=active]:text-neon-green">
-              BATTERY
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Hourly Footsteps Bar Chart */}
-          <TabsContent value="footsteps">
-            <div className="mb-2 flex items-center gap-3">
-              <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-sm bg-neon-amber" />
-                <span className="text-xs font-mono-tech text-muted-foreground">Morning (High)</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-sm bg-neon-cyan" />
-                <span className="text-xs font-mono-tech text-muted-foreground">Afternoon (Low)</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-sm bg-muted" />
-                <span className="text-xs font-mono-tech text-muted-foreground">Night</span>
-              </div>
-            </div>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={hourlyChartData} style={CHART_STYLE} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e1e1e" />
-                <XAxis
-                  dataKey="hour"
-                  tick={{ fill: '#666', fontSize: 9 }}
-                  tickLine={false}
-                  axisLine={{ stroke: '#2a2a2a' }}
-                  interval={3}
-                />
-                <YAxis
-                  tick={{ fill: '#666', fontSize: 9 }}
-                  tickLine={false}
-                  axisLine={{ stroke: '#2a2a2a' }}
-                />
-                <Tooltip
-                  contentStyle={TOOLTIP_STYLE}
-                  labelStyle={{ color: '#999' }}
-                  cursor={{ fill: 'rgba(255,255,255,0.03)' }}
-                />
-                <Bar
-                  dataKey="footsteps"
-                  name="Steps/min"
-                  radius={[2, 2, 0, 0]}
-                  fill="oklch(0.78 0.18 75)"
-                  // Color by period
-                  label={false}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-            <p className="text-xs font-mono-tech text-muted-foreground text-center mt-1">
-              Hourly footstep pattern — morning peak clearly visible (06:00–12:00)
+      <CardContent className="space-y-5">
+        {!hasData && !isLoading ? (
+          <div className="flex flex-col items-center justify-center py-6 gap-3">
+            <WifiOff className="w-8 h-8 text-muted-foreground/40" />
+            <p className="font-orbitron text-xs tracking-widest uppercase text-muted-foreground">
+              Awaiting Hardware Data
             </p>
-          </TabsContent>
-
-          {/* Voltage Line Chart */}
-          <TabsContent value="voltage">
-            {timeSeriesData.length === 0 ? (
-              <div className="h-[200px] flex items-center justify-center text-muted-foreground font-mono-tech text-sm">
-                No data yet — advance simulation to generate records
-              </div>
-            ) : (
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={timeSeriesData} style={CHART_STYLE} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e1e1e" />
-                  <XAxis
-                    dataKey="time"
-                    tick={{ fill: '#666', fontSize: 9 }}
-                    tickLine={false}
-                    axisLine={{ stroke: '#2a2a2a' }}
-                    interval="preserveStartEnd"
-                  />
-                  <YAxis
-                    tick={{ fill: '#666', fontSize: 9 }}
-                    tickLine={false}
-                    axisLine={{ stroke: '#2a2a2a' }}
-                  />
-                  <Tooltip
-                    contentStyle={TOOLTIP_STYLE}
-                    labelStyle={{ color: '#999' }}
-                    cursor={{ stroke: 'oklch(0.72 0.18 200 / 0.3)' }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="voltage"
-                    name="Voltage (W)"
-                    stroke="oklch(0.72 0.18 200)"
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{ r: 4, fill: 'oklch(0.72 0.18 200)' }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            )}
-          </TabsContent>
-
-          {/* Battery Level Line Chart */}
-          <TabsContent value="battery">
-            {timeSeriesData.length === 0 ? (
-              <div className="h-[200px] flex items-center justify-center text-muted-foreground font-mono-tech text-sm">
-                No data yet — advance simulation to generate records
-              </div>
-            ) : (
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={timeSeriesData} style={CHART_STYLE} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e1e1e" />
-                  <XAxis
-                    dataKey="time"
-                    tick={{ fill: '#666', fontSize: 9 }}
-                    tickLine={false}
-                    axisLine={{ stroke: '#2a2a2a' }}
-                    interval="preserveStartEnd"
-                  />
-                  <YAxis
-                    domain={[0, 100]}
-                    tick={{ fill: '#666', fontSize: 9 }}
-                    tickLine={false}
-                    axisLine={{ stroke: '#2a2a2a' }}
-                  />
-                  <Tooltip
-                    contentStyle={TOOLTIP_STYLE}
-                    labelStyle={{ color: '#999' }}
-                    cursor={{ stroke: 'oklch(0.72 0.2 145 / 0.3)' }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="battery"
-                    name="Battery (%)"
-                    stroke="oklch(0.72 0.2 145)"
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{ r: 4, fill: 'oklch(0.72 0.2 145)' }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            )}
-          </TabsContent>
-        </Tabs>
+            <p className="text-xs font-mono-tech text-muted-foreground/60 text-center">
+              Analytics bars will fill as sensor readings arrive from your ESP32.
+            </p>
+          </div>
+        ) : (
+          <>
+            <MetricRow
+              icon={<Zap className="w-4 h-4 text-neon-amber" />}
+              label="Voltage"
+              value={voltage.toFixed(2)}
+              unit="V"
+              barPercent={voltagePercent}
+              barColor="bg-neon-amber"
+            />
+            <MetricRow
+              icon={<Activity className="w-4 h-4 text-neon-cyan" />}
+              label="Current"
+              value={current.toFixed(3)}
+              unit="A"
+              barPercent={currentPercent}
+              barColor="bg-neon-cyan"
+            />
+            <MetricRow
+              icon={<Zap className="w-4 h-4 text-neon-green" />}
+              label="Energy"
+              value={energy.toFixed(3)}
+              unit="Wh"
+              barPercent={energyPercent}
+              barColor="bg-neon-green"
+            />
+            <MetricRow
+              icon={<Footprints className="w-4 h-4 text-neon-amber" />}
+              label="Footsteps"
+              value={footstepCount.toString()}
+              unit="steps"
+              barPercent={footstepPercent}
+              barColor="bg-neon-amber"
+            />
+          </>
+        )}
       </CardContent>
     </Card>
   );

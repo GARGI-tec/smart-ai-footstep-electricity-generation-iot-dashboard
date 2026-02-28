@@ -1,59 +1,34 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 5,
-  "summary": "Final year engineering project: Smart AI Footstep Electricity Generation using IoT. A web dashboard app that displays AI-driven energy management from footstep-powered generators. The dashboard should show blank/empty state until real hardware is connected and sending data. Features IoT sensor data display, AI smart energy routing, overcharge prevention, time-of-day pattern learning, and energy flow visualization. Includes an HTTP API endpoint for real hardware (Arduino/ESP32/Raspberry Pi) to send sensor data.",
+  "projectStateVersion": 3,
+  "summary": "Campus Energy Tile Dashboard project. Currently updating the app to show a 'No Device Connected' message instead of fake demo data until the real ESP32 hardware is connected.",
   "architectural_notes": [
-    "AI logic rules implemented client-side: if battery > 90%, route power directly to devices; store energy during peak hours; draw from storage during low traffic",
-    "Dashboard displays blank/empty state by default — no simulated data. Data only appears when real hardware sends readings via HTTP POST to the backend API endpoint."
+    "Dashboard currently uses simulated/demo data; real data comes from ESP32 hardware when connected"
   ],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-build-a-real-time-iot-sensor-data-display-panel-on-the-frontend-showing-current-footstep-count-steps-min-current-voltage-generated-w-battery-level-as-a-percentage-with-a-visual-progress-bar-and-current-ai-mode-with-a-color-coded-status-badge-green-charging-amber-redirecting-blue-using-stored",
-      "title": "Build a real-time IoT sensor data display panel on the frontend showing: current footstep count (steps/min), current voltage generated (W), battery level as a percentage with a visual progress bar, and current AI mode with a color-coded status badge (green = charging, amber = redirecting, blue = using stored).",
+      "id": "feature-update-simulationcontrol-component-to-display-a-prominent-no-device-connected-status-when-no-real-sensor-reading-has-been-received-from-the-esp32-hardware-instead-of-showing-a-syncing-or-active-state",
+      "title": "Update SimulationControl component to display a prominent 'No Device Connected' status when no real sensor reading has been received from the ESP32 hardware, instead of showing a syncing or active state.",
       "reqIds": [
-        "REQ-4"
+        "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-build-an-ai-smart-energy-management-decision-panel-on-the-frontend-that-shows-the-current-ai-decision-with-explanation-text-e-g-battery-is-95-full-redirecting-power-to-lights-and-devices-overcharge-protection-status-indicator-and-a-log-of-recent-ai-decisions-with-timestamps",
-      "title": "Build an AI Smart Energy Management decision panel on the frontend that shows the current AI decision with explanation text (e.g., 'Battery is 95% full — redirecting power to lights and devices'), overcharge protection status indicator, and a log of recent AI decisions with timestamps.",
+      "id": "feature-remove-all-hardcoded-simulated-demo-sensor-data-from-usequeries-ts-or-wherever-default-mock-values-are-injected-when-no-real-reading-exists-all-data-values-must-be-null-undefined-rather-than-fake-numbers",
+      "title": "Remove all hardcoded/simulated demo sensor data from useQueries.ts (or wherever default mock values are injected). When no real reading exists, all data values must be null/undefined rather than fake numbers.",
       "reqIds": [
-        "REQ-5"
+        "REQ-2"
       ],
       "version": 1
     },
     {
-      "id": "feature-build-an-animated-energy-flow-diagram-on-the-frontend-that-visually-shows-the-power-path-footsteps-generator-battery-devices-lights-highlight-the-active-path-based-on-current-ai-mode-e-g-when-battery-is-full-highlight-the-battery-devices-path-when-charging-highlight-the-generator-battery-path",
-      "title": "Build an animated energy flow diagram on the frontend that visually shows the power path: Footsteps → Generator → Battery → Devices/Lights. Highlight the active path based on current AI mode (e.g., when battery is full, highlight the Battery → Devices path; when charging, highlight the Generator → Battery path).",
+      "id": "feature-update-all-dashboard-panel-components-sensordatapanel-sensorreadingcards-analyticscharts-batterylevelpanel-usboutputstatuspanel-aidecisionpanel-energyflowdiagram-hexagontilepanel-to-render-a-clear-no-device-connected-or-awaiting-hardware-placeholder-state-instead-of-zeroed-out-or-default-values-when-sensor-data-is-null-absent",
+      "title": "Update all dashboard panel components (SensorDataPanel, SensorReadingCards, AnalyticsCharts, BatteryLevelPanel, USBOutputStatusPanel, AIDecisionPanel, EnergyFlowDiagram, HexagonTilePanel) to render a clear 'No Device Connected' or 'Awaiting Hardware' placeholder state — instead of zeroed-out or default values — when sensor data is null/absent.",
       "reqIds": [
-        "REQ-6"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-build-analytics-charts-on-the-frontend-showing-1-hourly-footstep-count-over-the-last-24-simulated-hours-as-a-bar-chart-2-energy-generated-voltage-over-time-as-a-line-chart-and-3-battery-level-trend-over-time-as-a-line-chart-charts-should-update-as-new-data-arrives",
-      "title": "Build analytics charts on the frontend showing: (1) hourly footstep count over the last 24 simulated hours as a bar chart, (2) energy generated (voltage) over time as a line chart, and (3) battery level trend over time as a line chart. Charts should update as new data arrives.",
-      "reqIds": [
-        "REQ-7"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-apply-a-bold-industrial-tech-visual-theme-across-the-entire-dashboard-dark-background-with-neon-accent-colors-amber-green-cyan-large-data-readout-typography-card-based-layout-with-subtle-glowing-borders-and-a-header-displaying-the-project-title-smart-ai-footstep-energy-system-the-design-should-feel-like-a-professional-engineering-control-room-dashboard",
-      "title": "Apply a bold industrial/tech visual theme across the entire dashboard: dark background with neon accent colors (amber/green/cyan), large data readout typography, card-based layout with subtle glowing borders, and a header displaying the project title 'Smart AI Footstep Energy System'. The design should feel like a professional engineering control room dashboard.",
-      "reqIds": [
-        "REQ-8"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-frontend-dashboard-to-show-a-blank-empty-waiting-state-on-all-panels-sensordatapanel-aidecisionpanel-energyflowdiagram-analyticscharts-simulationcontrol-when-the-backend-ishardwareconnected-flag-is-false-display-a-centered-placeholder-message-such-as-waiting-for-hardware-connection-with-a-subtle-pulsing-indicator-once-hardware-connects-and-the-flag-becomes-true-render-all-panels-normally-with-live-data-poll-the-ishardwareconnected-status-every-3-seconds-using-react-query",
-      "title": "Update the frontend dashboard to show a blank/empty waiting state on all panels (SensorDataPanel, AIDecisionPanel, EnergyFlowDiagram, AnalyticsCharts, SimulationControl) when the backend isHardwareConnected flag is false. Display a centered placeholder message such as 'Waiting for hardware connection...' with a subtle pulsing indicator. Once hardware connects and the flag becomes true, render all panels normally with live data. Poll the isHardwareConnected status every 3 seconds using React Query.",
-      "reqIds": [
-        "REQ-10"
+        "REQ-3"
       ],
       "version": 1
     }
@@ -61,87 +36,13 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Real-time IoT sensor data display (footstep count, voltage generated, battery level) with simulated data feed",
+      "summary": "Show 'No Device Connected' message instead of fake demo data until real ESP32 hardware is connected",
       "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-2",
-      "summary": "AI smart energy management panel showing decisions: charging, redirecting to devices, or using stored energy",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-3",
-      "summary": "Overcharge prevention logic: AI stops charging when battery is full and reroutes power to devices",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-4",
-      "summary": "Time-of-day traffic pattern learning visualization (morning = high steps/power, afternoon = fewer steps)",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-5",
-      "summary": "Energy flow diagram showing path: Footsteps → Generator → Battery → Devices/Lights",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-6",
-      "summary": "Analytics charts: daily/hourly footstep count, energy generation over time, battery level trends",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-7",
-      "summary": "Create a backend actor that stores and manages simulated IoT sensor data including: footstep count per hour, voltage generated (in watts), battery level percentage (0–100%), current AI mode (charging / redirecting to devices / using stored energy), and timestamped historical records for analytics.",
-      "reqIds": [
-        "REQ-1"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-8",
-      "summary": "Implement AI energy management logic in the backend that: stops charging when battery level exceeds 90% (overcharge prevention), reroutes power directly to devices/lights when battery is full, draws from stored battery energy during low-traffic periods, and determines current mode based on footstep count and battery level.",
-      "reqIds": [
-        "REQ-2"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-9",
-      "summary": "Implement time-of-day traffic pattern simulation in the backend: morning hours (6am–12pm) produce high footstep counts (80–150 steps/min) and high voltage; afternoon hours (12pm–6pm) produce lower footstep counts (30–70 steps/min) and lower voltage; evening/night hours produce minimal activity. The simulation should auto-tick every few seconds to advance sensor readings.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "status": "pending"
-    },
-    {
-      "id": "AR-10",
-      "summary": "Dashboard shows blank/empty state (no simulated data) until real hardware sends data via API. Once hardware connects and POSTs sensor readings, data appears live on the dashboard.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-11",
-      "summary": "Add a backend HTTP API endpoint that accepts real sensor data (footstep count, voltage, battery level) from hardware devices (Arduino, ESP32, Raspberry Pi) via POST request.",
-      "reqIds": [],
-      "status": "pending"
-    },
-    {
-      "id": "AR-12",
-      "summary": "Add a 'hardware connected' flag to the backend state. This flag starts as false. When real sensor data is received via the hardware POST API endpoint, set the flag to true. Expose a query function (e.g., isHardwareConnected) that returns this boolean so the frontend can check connection status.",
-      "reqIds": [
-        "REQ-9"
-      ],
       "status": "pending"
     }
   ],
   "gameProjectType": "none",
-  "projectName": "Smart AI Footstep Electricity Generation IoT Dashboard",
+  "projectName": "Campus Energy Tile Dashboard",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

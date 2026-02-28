@@ -10,14 +10,15 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export interface EnergyRecord {
+export interface BatteryStatus { 'status' : string, 'percentage' : bigint }
+export interface Reading {
   'voltage' : number,
+  'footstepCount' : bigint,
+  'usbOutputActive' : boolean,
   'batteryLevel' : bigint,
-  'mode' : string,
-  'timestamp' : Time,
-  'footsteps' : bigint,
+  'current' : number,
+  'energy' : number,
 }
-export type Time = bigint;
 export interface _CaffeineStorageCreateCertificateResult {
   'method' : string,
   'blob_hash' : string,
@@ -45,13 +46,9 @@ export interface _SERVICE {
     _CaffeineStorageRefillResult
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
-  'adjustEnergyMode' : ActorMethod<[], undefined>,
-  'advanceTime' : ActorMethod<[], undefined>,
-  'getCurrentHour' : ActorMethod<[], bigint>,
-  'getFootstepsByHour' : ActorMethod<[bigint], bigint>,
-  'getFootstepsToday' : ActorMethod<[], bigint>,
-  'getRecords' : ActorMethod<[], Array<EnergyRecord>>,
-  'isHardwareConnected' : ActorMethod<[], boolean>,
+  'getBatteryStatus' : ActorMethod<[], BatteryStatus>,
+  'getLatestReading' : ActorMethod<[], [] | [Reading]>,
+  'submitReading' : ActorMethod<[Reading], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

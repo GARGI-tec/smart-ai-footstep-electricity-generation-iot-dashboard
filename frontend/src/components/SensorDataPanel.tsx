@@ -1,52 +1,6 @@
-import { useGetRecords } from '../hooks/useQueries';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
+import { useLatestReading } from '../hooks/useQueries';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Footprints, Zap, Battery, Cpu } from 'lucide-react';
-import type { EnergyRecord } from '../backend';
-
-function getModeConfig(mode: string) {
-  switch (mode) {
-    case 'charging':
-      return {
-        label: 'Charging Battery',
-        color: 'text-neon-green',
-        borderColor: 'card-glow-green',
-        badgeClass: 'bg-neon-green/20 text-neon-green border-neon-green/40',
-        glowClass: 'glow-green',
-      };
-    case 'redirecting':
-      return {
-        label: 'Redirecting to Devices',
-        color: 'text-neon-amber',
-        borderColor: 'card-glow-amber',
-        badgeClass: 'bg-neon-amber/20 text-neon-amber border-neon-amber/40',
-        glowClass: 'glow-amber',
-      };
-    case 'depleting':
-      return {
-        label: 'Using Stored Energy',
-        color: 'text-neon-cyan',
-        borderColor: 'card-glow-cyan',
-        badgeClass: 'bg-neon-cyan/20 text-neon-cyan border-neon-cyan/40',
-        glowClass: 'glow-cyan',
-      };
-    default:
-      return {
-        label: 'Initializing...',
-        color: 'text-muted-foreground',
-        borderColor: '',
-        badgeClass: 'bg-muted/20 text-muted-foreground border-muted/40',
-        glowClass: '',
-      };
-  }
-}
-
-function getBatteryColor(level: number) {
-  if (level >= 80) return 'bg-neon-green';
-  if (level >= 40) return 'bg-neon-amber';
-  return 'bg-neon-red';
-}
+import { Footprints, Zap, Activity, Cpu, WifiOff } from 'lucide-react';
 
 interface SensorCardProps {
   icon: React.ReactNode;
@@ -72,18 +26,16 @@ function SensorCard({ icon, label, value, unit, accentClass }: SensorCardProps) 
 }
 
 export default function SensorDataPanel() {
-  const { data: records, isLoading } = useGetRecords();
+  const { data: reading, isLoading } = useLatestReading();
 
-  const latest: EnergyRecord | null = records && records.length > 0 ? records[records.length - 1] : null;
-
-  const footsteps = latest ? Number(latest.footsteps) : 0;
-  const voltage = latest ? latest.voltage.toFixed(2) : '0.00';
-  const batteryLevel = latest ? Number(latest.batteryLevel) : 0;
-  const mode = latest ? latest.mode : 'initializing';
-  const modeConfig = getModeConfig(mode);
+  const hasData = reading !== null && reading !== undefined;
+  const voltage = hasData ? reading!.voltage.toFixed(2) : null;
+  const current = hasData ? reading!.current.toFixed(3) : null;
+  const energy = hasData ? reading!.energy.toFixed(3) : null;
+  const footstepCount = hasData ? Number(reading!.footstepCount).toString() : null;
 
   return (
-    <Card className={`border bg-card ${modeConfig.borderColor}`}>
+    <Card className={`border bg-card ${hasData ? 'card-glow-amber' : ''}`}>
       <CardHeader className="pb-3">
         <CardTitle className="font-orbitron text-sm tracking-widest uppercase text-muted-foreground flex items-center gap-2">
           <Cpu className="w-4 h-4 text-neon-amber" />
@@ -94,58 +46,48 @@ export default function SensorDataPanel() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-3">
-          <SensorCard
-            icon={<Footprints className="w-4 h-4 text-neon-amber" />}
-            label="Footsteps"
-            value={footsteps.toString()}
-            unit="steps/min"
-            accentClass="card-glow-amber border"
-          />
-          <SensorCard
-            icon={<Zap className="w-4 h-4 text-neon-cyan" />}
-            label="Voltage"
-            value={voltage}
-            unit="W"
-            accentClass="card-glow-cyan border"
-          />
-        </div>
-
-        {/* Battery Level */}
-        <div className="rounded-lg border card-glow-green bg-card p-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Battery className="w-4 h-4 text-neon-green" />
-              <span className="text-xs font-mono-tech tracking-widest uppercase">Battery Level</span>
-            </div>
-            <span className="font-mono-tech text-2xl font-bold text-neon-green glow-text-green">
-              {batteryLevel}%
-            </span>
+        {!hasData && !isLoading ? (
+          <div className="flex flex-col items-center justify-center py-6 gap-3">
+            <WifiOff className="w-8 h-8 text-muted-foreground/40" />
+            <p className="font-orbitron text-xs tracking-widest uppercase text-muted-foreground">
+              Awaiting Hardware Connection
+            </p>
+            <p className="text-xs font-mono-tech text-muted-foreground/60 text-center">
+              Values will update automatically when ESP32 sends data.
+            </p>
           </div>
-          <div className="relative h-3 rounded-full bg-muted overflow-hidden">
-            <div
-              className={`h-full rounded-full transition-all duration-700 ${getBatteryColor(batteryLevel)}`}
-              style={{ width: `${batteryLevel}%` }}
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            <SensorCard
+              icon={<Footprints className="w-4 h-4 text-neon-amber" />}
+              label="Footsteps"
+              value={footstepCount ?? '—'}
+              unit="steps"
+              accentClass="card-glow-amber border"
             />
-            <div className="absolute inset-0 scanline" />
+            <SensorCard
+              icon={<Zap className="w-4 h-4 text-neon-cyan" />}
+              label="Voltage"
+              value={voltage ?? '—'}
+              unit="V"
+              accentClass="card-glow-cyan border"
+            />
+            <SensorCard
+              icon={<Activity className="w-4 h-4 text-neon-green" />}
+              label="Current"
+              value={current ?? '—'}
+              unit="A"
+              accentClass="card-glow-green border"
+            />
+            <SensorCard
+              icon={<Zap className="w-4 h-4 text-neon-amber" />}
+              label="Energy"
+              value={energy ?? '—'}
+              unit="Wh"
+              accentClass="card-glow-amber border"
+            />
           </div>
-          <div className="flex justify-between text-xs font-mono-tech text-muted-foreground">
-            <span>0%</span>
-            <span className={batteryLevel >= 90 ? 'text-neon-amber' : ''}>
-              {batteryLevel >= 90 ? '⚠ OVERCHARGE PROTECTION ACTIVE' : 'NORMAL RANGE'}
-            </span>
-            <span>100%</span>
-          </div>
-        </div>
-
-        {/* AI Mode Badge */}
-        <div className="flex items-center justify-between rounded-lg border border-border bg-muted/20 px-4 py-3">
-          <span className="text-xs font-mono-tech tracking-widest uppercase text-muted-foreground">AI Mode</span>
-          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-mono-tech font-semibold tracking-wider ${modeConfig.badgeClass}`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${modeConfig.color.replace('text-', 'bg-')} animate-pulse-glow`} />
-            {modeConfig.label.toUpperCase()}
-          </span>
-        </div>
+        )}
       </CardContent>
     </Card>
   );

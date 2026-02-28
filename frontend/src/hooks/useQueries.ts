@@ -1,115 +1,41 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { EnergyRecord } from '../backend';
+import type { Reading } from '../backend';
 
-export function useGetRecords() {
+export function useLatestReading() {
   const { actor, isFetching } = useActor();
-  return useQuery<EnergyRecord[]>({
-    queryKey: ['records'],
+  return useQuery<Reading | null>({
+    queryKey: ['latestReading'],
     queryFn: async () => {
-      if (!actor) return [];
-      return actor.getRecords();
+      if (!actor) return null;
+      return actor.getLatestReading();
     },
     enabled: !!actor && !isFetching,
-    refetchInterval: 4000,
+    refetchInterval: 5000,
+    staleTime: 4000,
   });
 }
 
-export function useGetCurrentHour() {
-  const { actor, isFetching } = useActor();
-  return useQuery<bigint>({
-    queryKey: ['currentHour'],
-    queryFn: async () => {
-      if (!actor) return BigInt(0);
-      return actor.getCurrentHour();
-    },
-    enabled: !!actor && !isFetching,
-    refetchInterval: 4000,
-  });
-}
-
-export function useGetFootstepsByHour(hour: bigint) {
-  const { actor, isFetching } = useActor();
-  return useQuery<bigint>({
-    queryKey: ['footstepsByHour', hour.toString()],
-    queryFn: async () => {
-      if (!actor) return BigInt(0);
-      return actor.getFootstepsByHour(hour);
-    },
-    enabled: !!actor && !isFetching,
-  });
-}
-
-export function useGetFootstepsToday() {
-  const { actor, isFetching } = useActor();
-  return useQuery<bigint>({
-    queryKey: ['footstepsToday'],
-    queryFn: async () => {
-      if (!actor) return BigInt(0);
-      return actor.getFootstepsToday();
-    },
-    enabled: !!actor && !isFetching,
-    refetchInterval: 4000,
-  });
-}
-
-export function useAdvanceTime() {
+export function useSubmitReading() {
   const { actor } = useActor();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (reading: Reading) => {
       if (!actor) throw new Error('Actor not ready');
-      return actor.advanceTime();
+      return actor.submitReading(reading);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['records'] });
-      queryClient.invalidateQueries({ queryKey: ['currentHour'] });
-      queryClient.invalidateQueries({ queryKey: ['footstepsToday'] });
+      queryClient.invalidateQueries({ queryKey: ['latestReading'] });
     },
   });
 }
 
-export function useAdjustEnergyMode() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: async () => {
-      if (!actor) throw new Error('Actor not ready');
-      return actor.adjustEnergyMode();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['records'] });
-    },
-  });
-}
-
-export function useHourlyFootsteps() {
-  const { actor, isFetching } = useActor();
-  return useQuery<{ hour: number; footsteps: number }[]>({
-    queryKey: ['hourlyFootsteps'],
-    queryFn: async () => {
-      if (!actor) return [];
-      const results = await Promise.all(
-        Array.from({ length: 24 }, (_, i) =>
-          actor.getFootstepsByHour(BigInt(i)).then((v) => ({ hour: i, footsteps: Number(v) }))
-        )
-      );
-      return results;
-    },
-    enabled: !!actor && !isFetching,
-    refetchInterval: 10000,
-  });
-}
-
-export function useHardwareConnectionStatus() {
-  const { actor, isFetching } = useActor();
-  return useQuery<boolean>({
-    queryKey: ['hardwareConnected'],
-    queryFn: async () => {
-      if (!actor) return false;
-      return actor.isHardwareConnected();
-    },
-    enabled: !!actor && !isFetching,
-    refetchInterval: 3000,
-  });
+export function useBatteryStatus() {
+  const { data: reading } = useLatestReading();
+  const hasData = reading !== null && reading !== undefined;
+  return {
+    batteryLevel: hasData ? Number(reading!.batteryLevel) : null,
+    usbOutputActive: hasData ? reading!.usbOutputActive : null,
+    hasData,
+  };
 }

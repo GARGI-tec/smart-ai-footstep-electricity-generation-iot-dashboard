@@ -1,25 +1,22 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-28T06:29:18.288Z",
-  "summary": "Both REQ-9 and REQ-10 are fully implemented. The backend adds a hardwareConnected flag (defaulting to false), exposes isHardwareConnected query, and sets the flag when hardware POSTs data. The frontend polls every 3 seconds via useHardwareConnectionStatus, conditionally renders HardwareWaitingState when not connected, and hides all panels (SensorDataPanel, AIDecisionPanel, EnergyFlowDiagram, AnalyticsCharts, SimulationControl) until hardware connects. The waiting state uses the existing neon amber/cyan industrial theme with pulsing animation.",
+  "generatedAt": "2026-02-28T13:19:15.237Z",
+  "summary": "The diff implements all three requirements comprehensively. REQ-1 is fulfilled by SimulationControl.tsx showing 'NO DEVICE CONNECTED' with a WifiOff icon and muted grey styling. REQ-2 is fulfilled by useQueries.ts returning null values (not hardcoded mock data) for all sensor fields when no reading exists. REQ-3 is fulfilled by all eight named panel components (SensorDataPanel, SensorReadingCards, AnalyticsCharts, BatteryLevelPanel, USBOutputStatusPanel, AIDecisionPanel, EnergyFlowDiagram, HexagonTilePanel) displaying placeholder states instead of zeroed-out values when data is null/absent.",
   "missing_requirements": [],
-  "hallucinated_features": [
-    {
-      "description": "A migration module (backend/migration.mo) was added to handle schema migration from old actor state to new actor state with the hardwareConnected field.",
-      "reason": "The build request did not request any migration module or schema migration logic. It only requested adding a flag and exposing a query. While potentially useful, this was not specified in the requirements.",
-      "evidence": [
-        "backend/migration.mo"
-      ]
-    }
-  ],
-  "confidence": 0.9,
+  "hallucinated_features": [],
+  "confidence": 0.97,
   "changed_files": [
-    "backend/main.mo",
-    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/components/DashboardLayout.tsx",
-    "frontend/src/components/HardwareWaitingState.tsx",
+    "frontend/src/components/AIDecisionPanel.tsx",
+    "frontend/src/components/AnalyticsCharts.tsx",
+    "frontend/src/components/BatteryLevelPanel.tsx",
+    "frontend/src/components/EnergyFlowDiagram.tsx",
+    "frontend/src/components/HexagonTilePanel.tsx",
+    "frontend/src/components/SensorDataPanel.tsx",
+    "frontend/src/components/SensorReadingCards.tsx",
+    "frontend/src/components/SimulationControl.tsx",
+    "frontend/src/components/USBOutputStatusPanel.tsx",
     "frontend/src/hooks/useQueries.ts",
     "project_state.json"
   ]

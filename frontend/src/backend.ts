@@ -89,18 +89,22 @@ export class ExternalBlob {
         return this;
     }
 }
-export interface EnergyRecord {
+export interface BatteryStatus {
+    status: string;
+    percentage: bigint;
+}
+export interface Reading {
     voltage: number;
+    footstepCount: bigint;
+    usbOutputActive: boolean;
     batteryLevel: bigint;
-    mode: string;
-    timestamp: Time;
-    footsteps: bigint;
+    current: number;
+    energy: number;
 }
 export interface _CaffeineStorageCreateCertificateResult {
     method: string;
     blob_hash: string;
 }
-export type Time = bigint;
 export interface _CaffeineStorageRefillResult {
     success?: boolean;
     topped_up_amount?: bigint;
@@ -115,15 +119,11 @@ export interface backendInterface {
     _caffeineStorageCreateCertificate(blobHash: string): Promise<_CaffeineStorageCreateCertificateResult>;
     _caffeineStorageRefillCashier(refillInformation: _CaffeineStorageRefillInformation | null): Promise<_CaffeineStorageRefillResult>;
     _caffeineStorageUpdateGatewayPrincipals(): Promise<void>;
-    adjustEnergyMode(): Promise<void>;
-    advanceTime(): Promise<void>;
-    getCurrentHour(): Promise<bigint>;
-    getFootstepsByHour(hour: bigint): Promise<bigint>;
-    getFootstepsToday(): Promise<bigint>;
-    getRecords(): Promise<Array<EnergyRecord>>;
-    isHardwareConnected(): Promise<boolean>;
+    getBatteryStatus(): Promise<BatteryStatus>;
+    getLatestReading(): Promise<Reading | null>;
+    submitReading(reading: Reading): Promise<void>;
 }
-import type { _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
+import type { Reading as _Reading, _CaffeineStorageRefillInformation as __CaffeineStorageRefillInformation, _CaffeineStorageRefillResult as __CaffeineStorageRefillResult } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
     async _caffeineStorageBlobIsLive(arg0: Uint8Array): Promise<boolean> {
@@ -210,101 +210,45 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async adjustEnergyMode(): Promise<void> {
+    async getBatteryStatus(): Promise<BatteryStatus> {
         if (this.processError) {
             try {
-                const result = await this.actor.adjustEnergyMode();
+                const result = await this.actor.getBatteryStatus();
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.adjustEnergyMode();
+            const result = await this.actor.getBatteryStatus();
             return result;
         }
     }
-    async advanceTime(): Promise<void> {
+    async getLatestReading(): Promise<Reading | null> {
         if (this.processError) {
             try {
-                const result = await this.actor.advanceTime();
-                return result;
+                const result = await this.actor.getLatestReading();
+                return from_candid_opt_n8(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.advanceTime();
-            return result;
+            const result = await this.actor.getLatestReading();
+            return from_candid_opt_n8(this._uploadFile, this._downloadFile, result);
         }
     }
-    async getCurrentHour(): Promise<bigint> {
+    async submitReading(arg0: Reading): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.getCurrentHour();
+                const result = await this.actor.submitReading(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getCurrentHour();
-            return result;
-        }
-    }
-    async getFootstepsByHour(arg0: bigint): Promise<bigint> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getFootstepsByHour(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getFootstepsByHour(arg0);
-            return result;
-        }
-    }
-    async getFootstepsToday(): Promise<bigint> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getFootstepsToday();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getFootstepsToday();
-            return result;
-        }
-    }
-    async getRecords(): Promise<Array<EnergyRecord>> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.getRecords();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.getRecords();
-            return result;
-        }
-    }
-    async isHardwareConnected(): Promise<boolean> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.isHardwareConnected();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.isHardwareConnected();
+            const result = await this.actor.submitReading(arg0);
             return result;
         }
     }
@@ -316,6 +260,9 @@ function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Ar
     return value.length === 0 ? null : value[0];
 }
 function from_candid_opt_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [bigint]): bigint | null {
+    return value.length === 0 ? null : value[0];
+}
+function from_candid_opt_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_Reading]): Reading | null {
     return value.length === 0 ? null : value[0];
 }
 function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {

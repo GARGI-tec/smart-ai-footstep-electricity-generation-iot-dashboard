@@ -1,14 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Show a blank waiting state on the dashboard until real hardware connects and sends sensor data.
+**Goal:** Replace fake/demo sensor data with a clear "No Device Connected" state across the entire dashboard when no real ESP32 hardware reading is available.
 
 **Planned changes:**
-- Add an `isHardwareConnected` boolean flag to the backend state, defaulting to `false`
-- Set the flag to `true` when real sensor data is received via the hardware POST API endpoint
-- Expose an `isHardwareConnected` query function on the backend
-- Update the frontend dashboard to hide all panels (SensorDataPanel, AIDecisionPanel, EnergyFlowDiagram, AnalyticsCharts, SimulationControl) when `isHardwareConnected` is `false`
-- Display a centered "Waiting for hardware connection..." placeholder with a pulsing animation styled to match the existing dark neon industrial theme
-- Poll `isHardwareConnected` every 3 seconds via React Query and automatically reveal all panels when the flag becomes `true`
+- Update `SimulationControl` component to show a visually distinct "No Device Connected" indicator (grey/muted) when no real sensor reading has been received
+- Remove all hardcoded/simulated mock sensor values from `useQueries.ts`; return null/undefined for all sensor fields when no backend reading exists
+- Update all dashboard panel components (`SensorDataPanel`, `SensorReadingCards`, `AnalyticsCharts`, `BatteryLevelPanel`, `USBOutputStatusPanel`, `AIDecisionPanel`, `EnergyFlowDiagram`, `HexagonTilePanel`) to display a "No Device Connected" or "Awaiting Hardware" placeholder instead of zeroed-out or default values when data is null
+- Ensure all panels automatically switch to displaying real readings once hardware connects and data arrives
 
-**User-visible outcome:** The dashboard shows a blank waiting screen with a pulsing "Waiting for hardware connection..." message until real hardware POSTs sensor data, at which point all panels automatically appear with live data — no page refresh required.
+**User-visible outcome:** The dashboard no longer shows misleading fake or zeroed data; instead, every panel clearly indicates that no hardware is connected until a real ESP32 reading is received.

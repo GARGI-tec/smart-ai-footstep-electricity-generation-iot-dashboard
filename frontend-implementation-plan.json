@@ -1,33 +1,86 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Show blank dashboard until hardware connects and sends data",
+  "title": "Show 'No Device Connected' state instead of demo data",
   "requirements": [
     {
-      "id": "REQ-10",
-      "summary": "Update the frontend dashboard to show a blank waiting state on all panels when hardware is not connected, polling the backend connection status every 3 seconds",
+      "id": "REQ-1",
+      "summary": "Update SimulationControl component to display a prominent 'No Device Connected' status when no real sensor reading has been received from the ESP32 hardware",
       "acceptanceCriteria": [
-        "When isHardwareConnected is false, all data panels are hidden and replaced with a 'Waiting for hardware connection...' placeholder",
-        "The placeholder uses the existing dark neon industrial theme (dark background, amber/cyan accent text, pulsing animation)",
-        "When isHardwareConnected becomes true, all dashboard panels render with live sensor data",
-        "Frontend polls isHardwareConnected every 3 seconds and automatically reveals panels without requiring a page refresh",
-        "The SimulationControl (manual advance) is also hidden in the waiting state so users cannot inject fake data before hardware connects"
+        "SimulationControl shows 'No Device Connected' indicator when latest reading is null or absent",
+        "The indicator is visually distinct (e.g., grey/muted color) compared to the active connected state"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/SimulationControl.tsx",
+          "operation": "modify",
+          "description": "Replace the syncing/active state logic to explicitly check if the latest reading is null. When null, display a 'No Device Connected' status with a muted grey color scheme and a static indicator (not pulsing). When a real reading exists, show the connected state with appropriate styling. Ensure the visual distinction is clear between disconnected (grey/muted) and connected (active cyan/green) states."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Remove all hardcoded/simulated demo sensor data from useQueries.ts so that when no real reading exists, all data values are null/undefined",
+      "acceptanceCriteria": [
+        "No mock or hardcoded voltage, current, energy, footstep, or battery values are returned when the backend has no stored reading",
+        "React Query hooks return null/undefined for all sensor fields when no reading is available"
       ],
       "file_operations": [
         {
           "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Add a new React Query hook useHardwareConnectionStatus that wraps the backend isHardwareConnected() call with a 3-second polling interval (refetchInterval: 3000). Return the boolean connection status with loading and error states. This hook will be used by DashboardLayout to decide whether to show the waiting state or live data panels."
-        },
+          "description": "Remove any default/fallback values or mock data transformations that inject fake sensor readings. Ensure useLatestReading returns exactly what the backend provides (null when no reading exists, or the Reading object when available). Update useBatteryStatus and useUSBStatus hooks to properly handle null reading data without substituting default values. All derived metrics must be null/undefined when the source reading is null."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Update all dashboard panel components to render a clear 'No Device Connected' or 'Awaiting Hardware' placeholder state when sensor data is null/absent",
+      "acceptanceCriteria": [
+        "Each panel displays a 'No Device Connected' or equivalent placeholder message when data is null",
+        "No panel shows '0', '0%', or other misleading default values when hardware is not connected",
+        "When real data arrives from the backend, panels switch to displaying actual readings automatically"
+      ],
+      "file_operations": [
         {
-          "path": "frontend/src/components/DashboardLayout.tsx",
+          "path": "frontend/src/components/SensorDataPanel.tsx",
           "operation": "modify",
-          "description": "Import and call useHardwareConnectionStatus at the top of the component. When the connection status is false or loading, render a centered placeholder component (to be created) with a 'Waiting for hardware connection...' message, pulsing indicator, and industrial neon styling matching the existing theme. When the connection status is true, render all existing dashboard panels (header, simulation control, sensor/AI panels, energy flow diagram, analytics charts, footer) as they are today. Ensure the conditional rendering wraps the entire content area while keeping the overall layout structure intact."
+          "description": "Add null-check logic at the component level. When the latest reading is null, render a centered placeholder message 'Awaiting Hardware Connection' in place of the four sensor metric cards. Use muted styling (grey text, no glow effects). When real data is present, render the existing metric cards normally."
         },
         {
-          "path": "frontend/src/components/HardwareWaitingState.tsx",
-          "operation": "create",
-          "description": "Create a new React component that displays a centered waiting state UI with a 'Waiting for hardware connection...' message in the Orbitron font with amber glow, a pulsing animated indicator (e.g., a dot or icon), and a dark background matching the existing neon industrial theme. Use Tailwind utility classes from the existing theme (oklch colors, glow effects, pulse animation). The component should fill the available space and center its content both vertically and horizontally. Include a subtle scanline overlay effect consistent with the existing dashboard aesthetic."
+          "path": "frontend/src/components/SensorReadingCards.tsx",
+          "operation": "modify",
+          "description": "Check if the latest reading is null. If null, render a centered 'No Device Connected' message inside the cyan-glowing card container with muted text and hide the four stat cards. Remove or hide the syncing indicator when disconnected. When data exists, display the stat cards and syncing indicator as before."
+        },
+        {
+          "path": "frontend/src/components/AnalyticsCharts.tsx",
+          "operation": "modify",
+          "description": "Add a null-check for sensor data at the top of the component. When data is null, render a placeholder message 'Awaiting Hardware Data' centered in the card with muted styling, hiding all four progress bars. When data is available, render the progress bars with actual values. Avoid showing zero-filled bars when disconnected."
+        },
+        {
+          "path": "frontend/src/components/BatteryLevelPanel.tsx",
+          "operation": "modify",
+          "description": "Check if the battery level data is null/undefined. When null, display 'No Device Connected' as a placeholder message in place of the percentage display and fill bar, using muted grey styling. When battery data is available, render the existing percentage, fill bar, and segmented indicator normally. Do not default to 0% when data is absent."
+        },
+        {
+          "path": "frontend/src/components/USBOutputStatusPanel.tsx",
+          "operation": "modify",
+          "description": "Add null-check logic for battery status data. When null, display 'Awaiting Hardware' as the status label with muted styling, and hide or grey-out the output/device detail fields. When data is available, derive and display the CHARGING/IDLE status with color-coded glows as before."
+        },
+        {
+          "path": "frontend/src/components/AIDecisionPanel.tsx",
+          "operation": "modify",
+          "description": "Check if the latest reading is null. When null, display 'AWAITING HARDWARE' as the energy status label with muted styling, and render placeholder text or hide the voltage/current/footstep metric grid. When data is present, derive the status (LOW/NORMAL/HIGH OUTPUT) and display the metrics normally."
+        },
+        {
+          "path": "frontend/src/components/EnergyFlowDiagram.tsx",
+          "operation": "modify",
+          "description": "Add a null-check for the latest reading. When null, render the SVG diagram with all arrows inactive (no animations, muted grey color) and optionally overlay a 'No Device Connected' text label in the center of the diagram. When data is present, animate the arrows and display active edges based on voltage as before."
+        },
+        {
+          "path": "frontend/src/components/HexagonTilePanel.tsx",
+          "operation": "modify",
+          "description": "Check if footstep count data is null. When null, render both hexagon tiles in an idle/inactive visual state (muted colors, no animations) and display 'Awaiting Hardware' or similar text. When data is available, distribute the footstep count and toggle active/idle states as before."
         }
       ]
     }

@@ -19,13 +19,17 @@ export const _CaffeineStorageRefillResult = IDL.Record({
   'success' : IDL.Opt(IDL.Bool),
   'topped_up_amount' : IDL.Opt(IDL.Nat),
 });
-export const Time = IDL.Int;
-export const EnergyRecord = IDL.Record({
+export const BatteryStatus = IDL.Record({
+  'status' : IDL.Text,
+  'percentage' : IDL.Nat,
+});
+export const Reading = IDL.Record({
   'voltage' : IDL.Float64,
+  'footstepCount' : IDL.Nat,
+  'usbOutputActive' : IDL.Bool,
   'batteryLevel' : IDL.Nat,
-  'mode' : IDL.Text,
-  'timestamp' : Time,
-  'footsteps' : IDL.Nat,
+  'current' : IDL.Float64,
+  'energy' : IDL.Float64,
 });
 
 export const idlService = IDL.Service({
@@ -55,13 +59,9 @@ export const idlService = IDL.Service({
       [],
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
-  'adjustEnergyMode' : IDL.Func([], [], []),
-  'advanceTime' : IDL.Func([], [], []),
-  'getCurrentHour' : IDL.Func([], [IDL.Nat], ['query']),
-  'getFootstepsByHour' : IDL.Func([IDL.Nat], [IDL.Nat], ['query']),
-  'getFootstepsToday' : IDL.Func([], [IDL.Nat], []),
-  'getRecords' : IDL.Func([], [IDL.Vec(EnergyRecord)], ['query']),
-  'isHardwareConnected' : IDL.Func([], [IDL.Bool], ['query']),
+  'getBatteryStatus' : IDL.Func([], [BatteryStatus], ['query']),
+  'getLatestReading' : IDL.Func([], [IDL.Opt(Reading)], ['query']),
+  'submitReading' : IDL.Func([Reading], [], []),
 });
 
 export const idlInitArgs = [];
@@ -78,13 +78,17 @@ export const idlFactory = ({ IDL }) => {
     'success' : IDL.Opt(IDL.Bool),
     'topped_up_amount' : IDL.Opt(IDL.Nat),
   });
-  const Time = IDL.Int;
-  const EnergyRecord = IDL.Record({
+  const BatteryStatus = IDL.Record({
+    'status' : IDL.Text,
+    'percentage' : IDL.Nat,
+  });
+  const Reading = IDL.Record({
     'voltage' : IDL.Float64,
+    'footstepCount' : IDL.Nat,
+    'usbOutputActive' : IDL.Bool,
     'batteryLevel' : IDL.Nat,
-    'mode' : IDL.Text,
-    'timestamp' : Time,
-    'footsteps' : IDL.Nat,
+    'current' : IDL.Float64,
+    'energy' : IDL.Float64,
   });
   
   return IDL.Service({
@@ -114,13 +118,9 @@ export const idlFactory = ({ IDL }) => {
         [],
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
-    'adjustEnergyMode' : IDL.Func([], [], []),
-    'advanceTime' : IDL.Func([], [], []),
-    'getCurrentHour' : IDL.Func([], [IDL.Nat], ['query']),
-    'getFootstepsByHour' : IDL.Func([IDL.Nat], [IDL.Nat], ['query']),
-    'getFootstepsToday' : IDL.Func([], [IDL.Nat], []),
-    'getRecords' : IDL.Func([], [IDL.Vec(EnergyRecord)], ['query']),
-    'isHardwareConnected' : IDL.Func([], [IDL.Bool], ['query']),
+    'getBatteryStatus' : IDL.Func([], [BatteryStatus], ['query']),
+    'getLatestReading' : IDL.Func([], [IDL.Opt(Reading)], ['query']),
+    'submitReading' : IDL.Func([Reading], [], []),
   });
 };
 
