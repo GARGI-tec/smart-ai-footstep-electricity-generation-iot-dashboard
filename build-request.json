@@ -1,0 +1,180 @@
+{
+  "kind": "build_request",
+  "title": "Smart AI Footstep Electricity Generation IoT Dashboard",
+  "projectName": "FootStep Energy AI",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Create a backend actor that stores and manages simulated IoT sensor data including: footstep count per hour, voltage generated (in watts), battery level percentage (0–100%), current AI mode (charging / redirecting to devices / using stored energy), and timestamped historical records for analytics.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "IOT sends data how many steps how much electricity produced It analyzes data collected from IOT sensors number of footsteps,voltage generated battery level"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Backend stores footstep count, voltage, battery level, and AI mode as stable state",
+        "Historical records are stored with timestamps",
+        "API endpoints exist to read current sensor state and historical data",
+        "API endpoint exists to advance/simulate the sensor tick (increment time, update readings)"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Implement AI energy management logic in the backend that: stops charging when battery level exceeds 90% (overcharge prevention), reroutes power directly to devices/lights when battery is full, draws from stored battery energy during low-traffic periods, and determines current mode based on footstep count and battery level.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "ai stops charging is full to avoid damage and energy loss",
+          "if battery is almost full it sends power directly to lights or devices instead of wasting it"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When battery >= 90%, AI mode switches to 'Redirecting to Devices'",
+        "When battery < 20% and footsteps are low, AI mode switches to 'Using Stored Energy'",
+        "When battery is between 20–90%, AI mode is 'Charging Battery'",
+        "AI mode is recalculated on every simulated sensor tick"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Implement time-of-day traffic pattern simulation in the backend: morning hours (6am–12pm) produce high footstep counts (80–150 steps/min) and high voltage; afternoon hours (12pm–6pm) produce lower footstep counts (30–70 steps/min) and lower voltage; evening/night hours produce minimal activity. The simulation should auto-tick every few seconds to advance sensor readings.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "if ai learns morning = many steps(more power) afternoon = fewer footsteps(less power then it stores more energy during busy time uses stored energy during low traffic time"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Simulated footstep and voltage values differ by time-of-day period",
+        "Morning period shows significantly higher readings than afternoon",
+        "Sensor data auto-updates at regular intervals to simulate live feed",
+        "Historical data accumulates over the session to feed analytics"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Build a real-time IoT sensor data display panel on the frontend showing: current footstep count (steps/min), current voltage generated (W), battery level as a percentage with a visual progress bar, and current AI mode with a color-coded status badge (green = charging, amber = redirecting, blue = using stored).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Display live/simulated sensor data: footstep count, voltage generated, battery level"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Live sensor values update automatically (polling every 3–5 seconds)",
+        "Battery level shown as a percentage progress bar with color changes at thresholds",
+        "AI mode badge is color-coded and updates in real time",
+        "Footstep and voltage readings are clearly labeled with units"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Build an AI Smart Energy Management decision panel on the frontend that shows the current AI decision with explanation text (e.g., 'Battery is 95% full — redirecting power to lights and devices'), overcharge protection status indicator, and a log of recent AI decisions with timestamps.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "AI decision panel showing current mode (charging / direct supply / storing)",
+          "Overcharge protection status (AI stops charging when battery is full)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Current AI decision is displayed with a human-readable explanation",
+        "Overcharge protection shows as active/inactive with visual indicator",
+        "Recent AI decision log shows last 10 decisions with timestamps",
+        "Panel updates in real time as AI mode changes"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Build an animated energy flow diagram on the frontend that visually shows the power path: Footsteps → Generator → Battery → Devices/Lights. Highlight the active path based on current AI mode (e.g., when battery is full, highlight the Battery → Devices path; when charging, highlight the Generator → Battery path).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Energy flow diagram showing path: Footsteps → Generator → Battery → Devices/Lights"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Diagram shows all four nodes: Footsteps, Generator, Battery, Devices/Lights",
+        "Active energy path is visually highlighted (glowing or animated arrows)",
+        "Inactive paths are dimmed",
+        "Diagram updates when AI mode changes"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Build analytics charts on the frontend showing: (1) hourly footstep count over the last 24 simulated hours as a bar chart, (2) energy generated (voltage) over time as a line chart, and (3) battery level trend over time as a line chart. Charts should update as new data arrives.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "Analytics charts: daily/hourly footstep count, energy generation over time, battery level trends"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Three separate charts are displayed in the analytics section",
+        "Footstep chart shows per-hour data as a bar chart",
+        "Energy and battery charts show trend lines over time",
+        "Charts update when new historical data is available",
+        "Morning vs afternoon contrast is visible in the footstep chart"
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "text": "Apply a bold industrial/tech visual theme across the entire dashboard: dark background with neon accent colors (amber/green/cyan), large data readout typography, card-based layout with subtle glowing borders, and a header displaying the project title 'Smart AI Footstep Energy System'. The design should feel like a professional engineering control room dashboard.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-5"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Dark background is used throughout the app",
+        "Accent colors (amber, green, cyan) are applied consistently to highlights and badges",
+        "Header displays the project title clearly",
+        "Layout uses a card-based grid appropriate for a control room dashboard",
+        "Typography is clean and data-readout styled for sensor values"
+      ]
+    }
+  ],
+  "constraints": [
+    "All sensor data simulation must happen within the single Motoko backend actor",
+    "No external IoT hardware or real sensor APIs — all data is simulated",
+    "Do not edit any files under frontend/src/hooks/ or frontend/src/components/ui"
+  ],
+  "nonGoals": [
+    "Connecting to real physical IoT sensors or hardware",
+    "User authentication or login",
+    "Mobile app or native application",
+    "Real-time WebSocket connections (polling is acceptable)",
+    "Exporting or downloading data reports"
+  ],
+  "imageRequirements": {
+    "required": [
+      "Glowing footstep icon on dark background with electric energy effect (footstep-icon.dim_128x128.png)",
+      "Dark industrial control room banner with circuit board pattern and subtle amber glow (dashboard-banner.dim_1200x200.png)"
+    ],
+    "edits": []
+  }
+}

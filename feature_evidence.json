@@ -1,0 +1,104 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-build-a-real-time-iot-sensor-data-display-panel-on-the-frontend-showing-current-footstep-count-steps-min-current-voltage-generated-w-battery-level-as-a-percentage-with-a-visual-progress-bar-and-current-ai-mode-with-a-color-coded-status-badge-green-charging-amber-redirecting-blue-using-stored",
+      "featureTitle": "Build a real-time IoT sensor data display panel on the frontend showing: current footstep count (steps/min), current voltage generated (W), battery level as a percentage with a visual progress bar, and current AI mode with a color-coded status badge (green = charging, amber = redirecting, blue = using stored).",
+      "files": [
+        "frontend/src/components/SensorDataPanel.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-build-an-ai-smart-energy-management-decision-panel-on-the-frontend-that-shows-the-current-ai-decision-with-explanation-text-e-g-battery-is-95-full-redirecting-power-to-lights-and-devices-overcharge-protection-status-indicator-and-a-log-of-recent-ai-decisions-with-timestamps",
+      "featureTitle": "Build an AI Smart Energy Management decision panel on the frontend that shows the current AI decision with explanation text (e.g., 'Battery is 95% full — redirecting power to lights and devices'), overcharge protection status indicator, and a log of recent AI decisions with timestamps.",
+      "files": [
+        "frontend/src/components/AIDecisionPanel.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-build-an-animated-energy-flow-diagram-on-the-frontend-that-visually-shows-the-power-path-footsteps-generator-battery-devices-lights-highlight-the-active-path-based-on-current-ai-mode-e-g-when-battery-is-full-highlight-the-battery-devices-path-when-charging-highlight-the-generator-battery-path",
+      "featureTitle": "Build an animated energy flow diagram on the frontend that visually shows the power path: Footsteps → Generator → Battery → Devices/Lights. Highlight the active path based on current AI mode (e.g., when battery is full, highlight the Battery → Devices path; when charging, highlight the Generator → Battery path).",
+      "files": [
+        "frontend/src/components/EnergyFlowDiagram.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-build-analytics-charts-on-the-frontend-showing-1-hourly-footstep-count-over-the-last-24-simulated-hours-as-a-bar-chart-2-energy-generated-voltage-over-time-as-a-line-chart-and-3-battery-level-trend-over-time-as-a-line-chart-charts-should-update-as-new-data-arrives",
+      "featureTitle": "Build analytics charts on the frontend showing: (1) hourly footstep count over the last 24 simulated hours as a bar chart, (2) energy generated (voltage) over time as a line chart, and (3) battery level trend over time as a line chart. Charts should update as new data arrives.",
+      "files": [
+        "frontend/src/components/AnalyticsCharts.tsx"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-apply-a-bold-industrial-tech-visual-theme-across-the-entire-dashboard-dark-background-with-neon-accent-colors-amber-green-cyan-large-data-readout-typography-card-based-layout-with-subtle-glowing-borders-and-a-header-displaying-the-project-title-smart-ai-footstep-energy-system-the-design-should-feel-like-a-professional-engineering-control-room-dashboard",
+      "featureTitle": "Apply a bold industrial/tech visual theme across the entire dashboard: dark background with neon accent colors (amber/green/cyan), large data readout typography, card-based layout with subtle glowing borders, and a header displaying the project title 'Smart AI Footstep Energy System'. The design should feel like a professional engineering control room dashboard.",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/DashboardHeader.tsx",
+        "frontend/src/components/DashboardLayout.tsx",
+        "frontend/src/index.css",
+        "frontend/tailwind.config.js"
+      ],
+      "components": [
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-8"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

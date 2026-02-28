@@ -1,0 +1,210 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-28T05:30:08.582Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 8,
+    "implemented": 5,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Create a backend actor that stores and manages simulated IoT sensor data including: footstep count per hour, voltage generated (in watts), battery level percentage (0–100%), current AI mode (charging / redirecting to devices / using stored energy), and timestamped historical records for analytics.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-2",
+        "summary": "Implement AI energy management logic in the backend that: stops charging when battery level exceeds 90% (overcharge prevention), reroutes power directly to devices/lights when battery is full, draws from stored battery energy during low-traffic periods, and determines current mode based on footstep count and battery level.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Implement time-of-day traffic pattern simulation in the backend: morning hours (6am–12pm) produce high footstep counts (80–150 steps/min) and high voltage; afternoon hours (12pm–6pm) produce lower footstep counts (30–70 steps/min) and lower voltage; evening/night hours produce minimal activity. The simulation should auto-tick every few seconds to advance sensor readings.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Build a real-time IoT sensor data display panel on the frontend showing: current footstep count (steps/min), current voltage generated (W), battery level as a percentage with a visual progress bar, and current AI mode with a color-coded status badge (green = charging, amber = redirecting, blue = using stored).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useSensorData.ts",
+          "frontend/src/components/SensorDataPanel.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/SensorDataPanel.tsx"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Build an AI Smart Energy Management decision panel on the frontend that shows the current AI decision with explanation text (e.g., 'Battery is 95% full — redirecting power to lights and devices'), overcharge protection status indicator, and a log of recent AI decisions with timestamps.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/AIDecisionPanel.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/AIDecisionPanel.tsx"
+        ]
+      },
+      {
+        "id": "REQ-6",
+        "summary": "Build an animated energy flow diagram on the frontend that visually shows the power path: Footsteps → Generator → Battery → Devices/Lights. Highlight the active path based on current AI mode (e.g., when battery is full, highlight the Battery → Devices path; when charging, highlight the Generator → Battery path).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/EnergyFlowDiagram.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/EnergyFlowDiagram.tsx"
+        ]
+      },
+      {
+        "id": "REQ-7",
+        "summary": "Build analytics charts on the frontend showing: (1) hourly footstep count over the last 24 simulated hours as a bar chart, (2) energy generated (voltage) over time as a line chart, and (3) battery level trend over time as a line chart. Charts should update as new data arrives.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/AnalyticsCharts.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/AnalyticsCharts.tsx"
+        ]
+      },
+      {
+        "id": "REQ-8",
+        "summary": "Apply a bold industrial/tech visual theme across the entire dashboard: dark background with neon accent colors (amber/green/cyan), large data readout typography, card-based layout with subtle glowing borders, and a header displaying the project title 'Smart AI Footstep Energy System'. The design should feel like a professional engineering control room dashboard.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js",
+          "frontend/src/components/DashboardHeader.tsx",
+          "frontend/src/components/DashboardLayout.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js",
+          "frontend/src/components/DashboardHeader.tsx",
+          "frontend/src/components/DashboardLayout.tsx",
+          "frontend/src/App.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/blob-storage/Mixin.mo",
+    "backend/blob-storage/Storage.mo",
+    "backend/main.mo",
+    "build-request.json",
+    "build-template/Dockerfile",
+    "build-template/LICENSE",
+    "build-template/README.md",
+    "build-template/deploy.sh",
+    "build-template/icp.yaml",
+    "build-template/package.json",
+    "build-template/pnpm-lock.yaml",
+    "build-template/pnpm-workspace.yaml",
+    "build-template/scripts/prune-unused-images.js",
+    "build-template/scripts/resize-images.js",
+    "build-template/src/backend/canister.yaml",
+    "build-template/src/backend/system-idl/aaaaa-aa.did",
+    "build-template/src/frontend/canister.yaml",
+    "build-template/src/frontend/components.json",
+    "build-template/src/frontend/env.json",
+    "build-template/src/frontend/eslint-rules/no-bigint-in-query-keys.js",
+    "build-template/src/frontend/eslint-rules/require-internet-identity-provider.js",
+    "build-template/src/frontend/eslint.config.js",
+    "build-template/src/frontend/package.json",
+    "build-template/src/frontend/postcss.config.js",
+    "build-template/src/frontend/src/components/ui/accordion.tsx",
+    "build-template/src/frontend/src/components/ui/alert-dialog.tsx",
+    "build-template/src/frontend/src/components/ui/alert.tsx",
+    "build-template/src/frontend/src/components/ui/aspect-ratio.tsx",
+    "build-template/src/frontend/src/components/ui/avatar.tsx",
+    "build-template/src/frontend/src/components/ui/badge.tsx",
+    "build-template/src/frontend/src/components/ui/breadcrumb.tsx",
+    "build-template/src/frontend/src/components/ui/button.tsx",
+    "build-template/src/frontend/src/components/ui/calendar.tsx",
+    "build-template/src/frontend/src/components/ui/card.tsx",
+    "build-template/src/frontend/src/components/ui/carousel.tsx",
+    "build-template/src/frontend/src/components/ui/chart.tsx",
+    "build-template/src/frontend/src/components/ui/checkbox.tsx",
+    "build-template/src/frontend/src/components/ui/collapsible.tsx",
+    "build-template/src/frontend/src/components/ui/command.tsx",
+    "build-template/src/frontend/src/components/ui/context-menu.tsx",
+    "build-template/src/frontend/src/components/ui/dialog.tsx",
+    "build-template/src/frontend/src/components/ui/drawer.tsx",
+    "build-template/src/frontend/src/components/ui/dropdown-menu.tsx",
+    "build-template/src/frontend/src/components/ui/form.tsx",
+    "build-template/src/frontend/src/components/ui/hover-card.tsx",
+    "build-template/src/frontend/src/components/ui/input-otp.tsx",
+    "build-template/src/frontend/src/components/ui/input.tsx",
+    "build-template/src/frontend/src/components/ui/label.tsx",
+    "build-template/src/frontend/src/components/ui/menubar.tsx",
+    "build-template/src/frontend/src/components/ui/navigation-menu.tsx",
+    "build-template/src/frontend/src/components/ui/pagination.tsx",
+    "build-template/src/frontend/src/components/ui/popover.tsx",
+    "build-template/src/frontend/src/components/ui/progress.tsx",
+    "build-template/src/frontend/src/components/ui/radio-group.tsx",
+    "build-template/src/frontend/src/components/ui/resizable.tsx",
+    "build-template/src/frontend/src/components/ui/scroll-area.tsx",
+    "build-template/src/frontend/src/components/ui/select.tsx",
+    "build-template/src/frontend/src/components/ui/separator.tsx",
+    "build-template/src/frontend/src/components/ui/sheet.tsx",
+    "build-template/src/frontend/src/components/ui/sidebar.tsx",
+    "build-template/src/frontend/src/components/ui/skeleton.tsx",
+    "build-template/src/frontend/src/components/ui/slider.tsx",
+    "build-template/src/frontend/src/components/ui/sonner.tsx",
+    "build-template/src/frontend/src/components/ui/switch.tsx",
+    "build-template/src/frontend/src/components/ui/table.tsx",
+    "build-template/src/frontend/src/components/ui/tabs.tsx",
+    "build-template/src/frontend/src/components/ui/textarea.tsx",
+    "build-template/src/frontend/src/components/ui/toggle-group.tsx",
+    "build-template/src/frontend/src/components/ui/toggle.tsx",
+    "build-template/src/frontend/src/components/ui/tooltip.tsx",
+    "build-template/src/frontend/src/hooks/use-mobile.tsx",
+    "build-template/src/frontend/src/lib/utils.ts",
+    "build-template/src/frontend/tsconfig.json",
+    "build-template/src/frontend/vite.config.js",
+    "build-template/tsconfig.json",
+    "caffeine.lock.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/index.css",
+    "frontend/index.html",
+    "frontend/public/assets/generated/dashboard-banner.dim_1200x200.png",
+    "frontend/public/assets/generated/footstep-icon.dim_128x128.png",
+    "frontend/src/App.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/AIDecisionPanel.tsx",
+    "frontend/src/components/AnalyticsCharts.tsx",
+    "frontend/src/components/DashboardHeader.tsx",
+    "frontend/src/components/DashboardLayout.tsx",
+    "frontend/src/components/EnergyFlowDiagram.tsx",
+    "frontend/src/components/SensorDataPanel.tsx",
+    "frontend/src/components/SimulationControl.tsx",
+    "frontend/src/config.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useActor.ts",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/main.tsx",
+    "frontend/src/ui-summary.json",
+    "frontend/src/utils/StorageClient.ts",
+    "frontend/tailwind.config.js",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

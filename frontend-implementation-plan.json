@@ -1,0 +1,119 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Smart AI Footstep Electricity Generation IoT Dashboard - Frontend",
+  "requirements": [
+    {
+      "id": "REQ-4",
+      "summary": "Build real-time IoT sensor data display panel showing footstep count, voltage, battery level with progress bar, and AI mode with color-coded status badge",
+      "acceptanceCriteria": [
+        "Live sensor values update automatically (polling every 3–5 seconds)",
+        "Battery level shown as a percentage progress bar with color changes at thresholds",
+        "AI mode badge is color-coded and updates in real time",
+        "Footstep and voltage readings are clearly labeled with units"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useSensorData.ts",
+          "operation": "create",
+          "description": "Create a custom hook that polls the backend getCurrentHour, getRecords, and getFootstepsToday methods every 3 seconds to fetch live sensor data. Return the latest EnergyRecord with computed footsteps per minute, voltage, battery level, and AI mode. Handle loading and error states."
+        },
+        {
+          "path": "frontend/src/components/SensorDataPanel.tsx",
+          "operation": "create",
+          "description": "Create a card component that displays current footstep count (steps/min), voltage (W), battery level as a percentage with a progress bar using shadcn/ui Progress component, and AI mode with a Badge component. Use color-coded badges: green for 'Charging Battery', amber for 'Redirecting to Devices', blue for 'Using Stored Energy'. Apply dark theme styling with neon accents. Use useSensorData hook for live updates."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Build AI Smart Energy Management decision panel showing current AI decision with explanation text, overcharge protection status, and recent decision log",
+      "acceptanceCriteria": [
+        "Current AI decision is displayed with a human-readable explanation",
+        "Overcharge protection shows as active/inactive with visual indicator",
+        "Recent AI decision log shows last 10 decisions with timestamps",
+        "Panel updates in real time as AI mode changes"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/AIDecisionPanel.tsx",
+          "operation": "create",
+          "description": "Create a card component that displays the current AI mode with human-readable explanation text based on battery level and mode (e.g., 'Battery is 95% full — redirecting power to lights and devices'). Show overcharge protection status as active when battery >= 90% using a visual indicator badge. Display a scrollable log of the last 10 AI decisions with timestamps from the EnergyRecord history. Use useSensorData hook and format timestamps as HH:MM:SS. Apply dark theme with neon accent colors."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Build animated energy flow diagram showing power path: Footsteps → Generator → Battery → Devices/Lights with highlighted active path based on current AI mode",
+      "acceptanceCriteria": [
+        "Diagram shows all four nodes: Footsteps, Generator, Battery, Devices/Lights",
+        "Active energy path is visually highlighted (glowing or animated arrows)",
+        "Inactive paths are dimmed",
+        "Diagram updates when AI mode changes"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/EnergyFlowDiagram.tsx",
+          "operation": "create",
+          "description": "Create an SVG-based energy flow diagram showing four nodes (Footsteps, Generator, Battery, Devices/Lights) connected by arrows. Use the generated footstep icon at frontend/public/assets/generated/footstep-icon.dim_128x128.png for the Footsteps node. Highlight the active energy path based on current AI mode: when mode is 'Charging Battery', highlight Generator → Battery; when 'Redirecting to Devices', highlight Battery → Devices; when 'Using Stored Energy', highlight Battery → Devices. Use CSS animations for glowing effect on active paths, dim inactive paths with reduced opacity. Use useSensorData hook to get current mode. Apply dark theme with amber/green/cyan glow effects."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Build analytics charts showing hourly footstep count bar chart, energy generation line chart, and battery level trend line chart",
+      "acceptanceCriteria": [
+        "Three separate charts are displayed in the analytics section",
+        "Footstep chart shows per-hour data as a bar chart",
+        "Energy and battery charts show trend lines over time",
+        "Charts update when new historical data is available",
+        "Morning vs afternoon contrast is visible in the footstep chart"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/AnalyticsCharts.tsx",
+          "operation": "create",
+          "description": "Create a component with three charts using recharts library: (1) Bar chart showing hourly footstep count for last 24 hours using getFootstepsByHour for each hour 0-23, (2) Line chart showing voltage over time from EnergyRecord history, (3) Line chart showing battery level percentage over time from EnergyRecord history. Format timestamps on x-axis. Use dark theme colors with neon accent lines (amber for voltage, green for battery). Charts update when useSensorData hook provides new records. Ensure morning (hours 6-12) shows higher footstep bars than afternoon (12-18)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Apply bold industrial/tech visual theme with dark background, neon accents, large data readout typography, card-based layout, and header displaying project title",
+      "acceptanceCriteria": [
+        "Dark background is used throughout the app",
+        "Accent colors (amber, green, cyan) are applied consistently to highlights and badges",
+        "Header displays the project title clearly",
+        "Layout uses a card-based grid appropriate for a control room dashboard",
+        "Typography is clean and data-readout styled for sensor values"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Update global styles to apply dark industrial theme: set dark background color (#0a0a0a or similar), define CSS custom properties for neon accent colors (--accent-amber, --accent-green, --accent-cyan), apply glowing box-shadow utilities for card borders, set large monospace or tech-styled font for data readouts. Ensure shadcn/ui components inherit dark theme styling."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Extend Tailwind theme to include custom neon accent colors (amber, green, cyan shades), add glow utilities for borders and shadows, configure dark mode as default, add custom font sizes for large data readout typography. Ensure theme supports card-based layout with spacing appropriate for a control room dashboard."
+        },
+        {
+          "path": "frontend/src/components/DashboardHeader.tsx",
+          "operation": "create",
+          "description": "Create a header component displaying 'Smart AI Footstep Energy System' as the project title. Use the generated dashboard banner image at frontend/public/assets/generated/dashboard-banner.dim_1200x200.png as a background or decorative element. Apply large bold typography with neon glow effect. Include subtle circuit board pattern styling. Position at the top of the dashboard layout."
+        },
+        {
+          "path": "frontend/src/components/DashboardLayout.tsx",
+          "operation": "create",
+          "description": "Create a layout component that arranges all dashboard panels in a card-based grid: SensorDataPanel, AIDecisionPanel, EnergyFlowDiagram, and AnalyticsCharts. Use CSS Grid or Flexbox for responsive layout appropriate for a control room dashboard. Apply consistent card styling with subtle glowing borders using the neon accent colors. Include DashboardHeader at the top. Apply dark background throughout."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Replace existing App content with DashboardLayout component. Remove any placeholder content. Ensure the app renders the full dashboard with all panels. Apply dark theme globally and ensure all components are properly wired and displayed."
+        }
+      ]
+    }
+  ]
+}

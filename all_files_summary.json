@@ -1,0 +1,22 @@
+{
+  "backend/main.mo": "Motoko actor implementing IoT energy simulation: tracks footsteps, voltage, and battery level across hourly records, managing charging/redirecting/depleting modes with advanceTime, getRecords, and helper query functions.",
+  "feature_evidence.json": "Feature evidence report mapping implemented features (sensor panel, AI decision panel, energy flow diagram, analytics charts) to their frontend component files, dependencies, and test IDs.",
+  "frontend-file-summaries.txt": "JSON document containing one-line summaries of all frontend source files, describing each component's purpose and styling approach for build planning reference.",
+  "frontend/index.css": "Base Tailwind CSS file defining OKLCH color tokens for light and dark themes, including card, sidebar, chart, and destructive color variables.",
+  "frontend/index.html": "HTML entry point for the React app, setting the page title to 'Smart AI Footstep Electricity Generation IoT Dashboard' and mounting the app at #root.",
+  "frontend/src/App.tsx": "Root React component that renders the single DashboardLayout component as the entire application.",
+  "frontend/src/components/AIDecisionPanel.tsx": "Card component displaying the current AI energy mode with explanation text, overcharge protection status indicator, and a scrollable log of the last 10 timestamped decisions from backend records.",
+  "frontend/src/components/AnalyticsCharts.tsx": "Tabbed analytics card using Recharts to display a 24-hour hourly footstep bar chart, a voltage-over-time line chart, and a battery level trend line chart, all sourced from backend records.",
+  "frontend/src/components/DashboardHeader.tsx": "Page header with a banner background image, scanline overlay, project title in Orbitron font with amber glow, and 'System Online' / 'AI Active' status badges.",
+  "frontend/src/components/DashboardLayout.tsx": "Root layout component that composes the full dashboard UI, arranging header, simulation control, sensor/AI panels, energy flow diagram, analytics charts, and a footer with attribution.",
+  "frontend/src/components/EnergyFlowDiagram.tsx": "SVG-based animated diagram showing energy flow between footstep sensors, generator, battery, and devices, with active edges and node glow states driven by the current energy mode.",
+  "frontend/src/components/SensorDataPanel.tsx": "Card panel displaying live sensor readings (footsteps, voltage, battery level, and AI mode) fetched from the latest energy record, with color-coded badges and progress bars per mode.",
+  "frontend/src/components/SimulationControl.tsx": "Control bar that lets users manually advance simulation time or enable auto-advance on a 4-second interval, showing current record count and pending state.",
+  "frontend/src/hooks/useActor.ts": "React hook that creates and caches an ICP actor (authenticated or anonymous) using React Query, and invalidates dependent queries whenever the actor or identity changes.",
+  "frontend/src/hooks/useInternetIdentity.ts": "Provides an InternetIdentityProvider and useInternetIdentity hook for managing DFINITY AuthClient login, logout, and identity persistence with status tracking.",
+  "frontend/src/hooks/useQueries.ts": "Collection of React Query hooks wrapping backend actor calls for fetching energy records, footstep data, current hour, and mutations for advancing time and adjusting energy mode.",
+  "frontend/src/index.css": "Global CSS file that imports Google Fonts (Orbitron, Share Tech Mono, Inter), sets up Tailwind base/components/utilities, defines CSS custom properties for a dark neon theme, and adds utility classes for glow effects, animations, and scanline overlays.",
+  "frontend/src/main.tsx": "React app entry point that wraps the App component with QueryClientProvider (React Query) and InternetIdentityProvider, then mounts to the DOM root.",
+  "frontend/tailwind.config.js": "Tailwind CSS configuration extending the default theme with custom fonts (Orbitron, Share Tech Mono, Inter), oklch-based color tokens for a dark neon UI, neon glow box shadows, and keyframe animations; includes typography, container-queries, and animate plugins.",
+  "project_state.json": "Project state metadata file describing the Smart AI Footstep Electricity Generation dashboard app, including its architectural notes, existing implemented features, known issues, and image requirements for the build planner."
+}
